@@ -1,0 +1,56 @@
+<%= form_with model: [:admin, match], class: "space-y-5" do |f| %>
+  <% if match.errors.any? %>
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700">
+      <p class="font-semibold mb-1">Corrija os erros abaixo:</p>
+      <ul class="list-disc list-inside space-y-0.5">
+        <% match.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="grid sm:grid-cols-2 gap-5">
+    <div>
+      <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Time Mandante</label>
+      <%= f.text_field :home_team,
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-slate-300",
+        placeholder: "Ex: Flamengo" %>
+    </div>
+    <div>
+      <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Time Visitante</label>
+      <%= f.text_field :away_team,
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-slate-300",
+        placeholder: "Ex: Palmeiras" %>
+    </div>
+  </div>
+
+  <div class="grid sm:grid-cols-2 gap-5">
+    <div>
+      <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Liga / Competição</label>
+      <%= f.text_field :league,
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-slate-300",
+        placeholder: "Ex: Brasileirão Série A" %>
+    </div>
+    <div>
+      <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Data e Hora</label>
+      <%= f.datetime_local_field :match_date,
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" %>
+    </div>
+  </div>
+
+  <div class="max-w-xs">
+    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Status</label>
+    <%= f.select :status,
+      [["Agendado", "scheduled"], ["Ao Vivo", "live"], ["Encerrado", "finished"]],
+      {},
+      class: "w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" %>
+  </div>
+
+  <div class="flex items-center gap-3 pt-2 border-t border-slate-100">
+    <%= f.submit match.new_record? ? "Criar Jogo" : "Salvar Alterações",
+      class: "bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold py-2.5 px-6 rounded-lg transition-colors shadow-sm cursor-pointer" %>
+    <%= link_to "Cancelar", admin_matches_path,
+      class: "text-sm text-slate-400 hover:text-slate-600 transition-colors" %>
+  </div>
+<% end %>

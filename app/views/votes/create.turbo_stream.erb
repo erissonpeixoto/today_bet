@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "tip_votes_#{@tip.id}" do %>
+  <%= render "tips/vote_counts", tip: @tip %>
+<% end %>

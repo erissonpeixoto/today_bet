@@ -1,0 +1,56 @@
+<div id="tip_<%= tip.id %>" class="bg-[#1a2535] border border-[#243040] p-4 hover:border-[#2d3f50] transition-colors">
+  <%# Rank badge + header %>
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center gap-2.5">
+      <% rank_color = rank == 1 ? "text-[#f0b429] bg-[#2a1f00] border-[#f0b429]/30" : rank == 2 ? "text-gray-400 bg-[#1f2535] border-[#3d4555]" : rank == 3 ? "text-orange-400 bg-[#2a1500] border-orange-800/30" : "text-gray-600 bg-[#152030] border-[#243040]" %>
+      <span class="text-[10px] font-black border px-1.5 py-0.5 rounded <%= rank_color %>">#<%= rank %></span>
+      <span class="text-sm font-bold text-gray-200"><%= tip.user.display_name %></span>
+    </div>
+    <span class="text-[11px] text-gray-600"><%= time_ago_in_words(tip.created_at) %> atrás</span>
+  </div>
+
+  <%# Market + confidence badges %>
+  <div class="flex flex-wrap gap-2 mb-3">
+    <span class="bg-[#0d2416] text-[#00c853] border border-[#1a5c2a] text-xs font-black px-3 py-1 uppercase tracking-wide">
+      <%= tip.market_label %>
+    </span>
+    <span class="bg-[#152030] text-gray-400 border border-[#243040] text-xs font-semibold px-3 py-1">
+      Confiança: <%= tip.confidence_label %>
+    </span>
+  </div>
+
+  <%# Justification %>
+  <p class="text-gray-400 text-sm leading-relaxed mb-4 border-l-2 border-[#243040] pl-3"><%= tip.justification %></p>
+
+  <%# Vote buttons — Turbo Frame target %>
+  <div id="tip_votes_<%= tip.id %>">
+    <%= render "tips/vote_counts", tip: tip %>
+  </div>
+
+  <%# Comments section %>
+  <div class="mt-4 border-t border-[#243040] pt-3">
+    <button
+      class="text-[11px] text-gray-600 hover:text-gray-400 flex items-center gap-1.5 mb-3 transition-colors"
+      onclick="document.getElementById('comments_section_<%= tip.id %>').classList.toggle('hidden')"
+    >
+      💬 <span id="comment_count_<%= tip.id %>"><%= tip.comments_count %></span> comentário<%= tip.comments_count == 1 ? "" : "s" %>
+    </button>
+
+    <div id="comments_section_<%= tip.id %>" class="hidden">
+      <div id="comments_<%= tip.id %>" class="space-y-2 mb-3">
+        <% tip.comments.includes(:user).order(:created_at).each do |comment| %>
+          <%= render "comments/comment", comment: comment %>
+        <% end %>
+      </div>
+
+      <% if user_signed_in? %>
+        <%= form_with url: match_tip_comments_path(tip.match, tip), class: "flex gap-2" do |f| %>
+          <%= f.text_field :content,
+            placeholder: "Adicionar comentário...",
+            class: "flex-1 bg-[#0f1923] border border-[#2d3f50] text-white text-xs rounded px-3 py-2 focus:outline-none focus:border-[#00c853] transition-colors placeholder-gray-700" %>
+          <%= f.submit "Enviar", class: "bg-[#1a3a22] border border-[#1a5c2a] text-[#00c853] text-xs font-bold px-4 py-2 hover:bg-[#0d2416] transition-colors cursor-pointer" %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

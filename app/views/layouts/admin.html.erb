@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <title>Admin - Bet do Dia</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-slate-50 min-h-screen text-slate-800">
+
+    <%# Top bar %>
+    <header class="bg-slate-900 text-white h-14 flex items-center px-6 shadow-sm sticky top-0 z-50">
+      <div class="flex items-center gap-6 flex-1">
+        <span class="font-black text-sm tracking-tight">
+          <span class="text-indigo-400">⚙</span> Bet<span class="text-indigo-400">do</span>Dia
+          <span class="text-slate-500 font-normal ml-1">/ Admin</span>
+        </span>
+
+        <nav class="flex items-center gap-1 ml-4">
+          <%= link_to admin_root_path, class: "text-xs text-slate-400 hover:text-white hover:bg-slate-800 px-3 py-1.5 rounded transition-colors" do %>
+            Dashboard
+          <% end %>
+          <%= link_to admin_matches_path, class: "text-xs text-slate-400 hover:text-white hover:bg-slate-800 px-3 py-1.5 rounded transition-colors" do %>
+            Jogos
+          <% end %>
+        </nav>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <%= link_to "← Ver site", root_path, class: "text-xs text-slate-400 hover:text-white transition-colors" %>
+        <span class="text-slate-700">|</span>
+        <%= button_to "Sair", destroy_user_session_path, method: :delete,
+            class: "text-xs text-slate-400 hover:text-white transition-colors cursor-pointer bg-transparent" %>
+      </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-8">
+      <% if notice %>
+        <div class="mb-5 bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+          <span class="text-emerald-500 font-bold">✓</span> <%= notice %>
+        </div>
+      <% end %>
+      <% if alert %>
+        <div class="mb-5 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+          <span class="text-red-500">✕</span> <%= alert %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

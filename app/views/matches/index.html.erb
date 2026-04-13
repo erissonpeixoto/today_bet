@@ -1,0 +1,83 @@
+<% content_for :title, "Jogos do Dia - Bet do Dia" %>
+
+<div class="mb-6 flex items-end justify-between">
+  <div>
+    <h1 class="text-xl font-black text-white uppercase tracking-wide">Jogos de Hoje</h1>
+    <p class="text-gray-500 text-xs mt-0.5">Palpite nos melhores mercados e suba no ranking</p>
+  </div>
+  <span class="text-xs text-[#00c853] bg-[#0d2416] border border-[#1a5c2a] px-3 py-1 rounded font-bold uppercase tracking-wide">
+    ⚽ Ao Vivo &amp; Agendados
+  </span>
+</div>
+
+<% if @matches.empty? %>
+  <div class="text-center py-20 text-gray-600">
+    <div class="text-5xl mb-4">📅</div>
+    <p class="text-base font-semibold text-gray-500">Nenhum jogo disponível hoje.</p>
+    <p class="text-xs mt-2 text-gray-600">Volte mais tarde!</p>
+  </div>
+<% else %>
+  <div class="grid gap-0.5 sm:grid-cols-2">
+    <% @matches.each do |match| %>
+      <%= link_to match_path(match), class: "block bg-[#1a2535] hover:bg-[#1f2d40] border border-[#243040] hover:border-[#00c853]/30 transition-all group" do %>
+
+        <%# League + time bar %>
+        <div class="flex items-center justify-between px-4 py-2 border-b border-[#243040] bg-[#152030]">
+          <span class="text-xs font-bold text-[#00c853] uppercase tracking-wide">
+            <%= match.league %>
+          </span>
+          <div class="flex items-center gap-2">
+            <% if match.live? %>
+              <span class="flex items-center gap-1 text-xs font-black text-red-400 uppercase">
+                <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse inline-block"></span>
+                Ao Vivo
+              </span>
+            <% elsif match.finished? %>
+              <span class="text-xs text-gray-600 uppercase font-semibold">Encerrado</span>
+            <% else %>
+              <span class="text-xs text-gray-400 font-mono"><%= match.formatted_date %></span>
+            <% end %>
+          </div>
+        </div>
+
+        <%# Teams %>
+        <div class="flex items-center justify-center gap-4 px-4 py-5">
+          <div class="text-center flex-1">
+            <p class="font-black text-white text-base leading-tight group-hover:text-[#00c853] transition-colors"><%= match.home_team %></p>
+            <p class="text-[10px] text-gray-600 mt-0.5 uppercase tracking-wide">Mandante</p>
+          </div>
+          <div class="text-center px-3">
+            <span class="text-lg font-black text-[#243040]">VS</span>
+          </div>
+          <div class="text-center flex-1">
+            <p class="font-black text-white text-base leading-tight group-hover:text-[#00c853] transition-colors"><%= match.away_team %></p>
+            <p class="text-[10px] text-gray-600 mt-0.5 uppercase tracking-wide">Visitante</p>
+          </div>
+        </div>
+
+        <%# Footer bar %>
+        <div class="flex items-center justify-between px-4 py-2 border-t border-[#243040]">
+          <span class="text-[11px] text-gray-600">
+            💬 <%= match.tips.count %> palpite<%= match.tips.count == 1 ? "" : "s" %>
+          </span>
+          <span class="text-[11px] font-bold text-[#00c853] uppercase tracking-wide group-hover:underline">
+            Ver palpites →
+          </span>
+        </div>
+
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if @pagy.pages > 1 %>
+    <div class="mt-6 flex justify-center gap-1 text-xs">
+      <% if @pagy.prev %>
+        <%= link_to "← Anterior", matches_path(page: @pagy.prev), class: "px-4 py-2 bg-[#1a2535] border border-[#243040] text-gray-400 hover:text-white hover:border-[#00c853]/50 transition" %>
+      <% end %>
+      <span class="px-4 py-2 text-gray-600 bg-[#152030]">Página <%= @pagy.page %> de <%= @pagy.pages %></span>
+      <% if @pagy.next %>
+        <%= link_to "Próxima →", matches_path(page: @pagy.next), class: "px-4 py-2 bg-[#1a2535] border border-[#243040] text-gray-400 hover:text-white hover:border-[#00c853]/50 transition" %>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

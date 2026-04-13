@@ -1,0 +1,33 @@
+<div class="flex items-center gap-1.5 flex-wrap">
+  <% vote_url = match_tip_votes_path(tip.match, tip) %>
+
+  <%= button_to vote_url,
+    params: { vote_type: "concordo" },
+    data: { turbo_stream: true },
+    class: "flex items-center gap-1.5 bg-[#0d1e2e] hover:bg-[#0d2a3e] border border-[#1a3a5c] hover:border-blue-500/50 text-blue-400 text-xs font-bold px-3 py-1.5 transition-all cursor-pointer" do %>
+    👍 <span class="tabular-nums"><%= tip.votes_agree_count %></span>
+  <% end %>
+
+  <%= button_to vote_url,
+    params: { vote_type: "discordo" },
+    data: { turbo_stream: true },
+    class: "flex items-center gap-1.5 bg-[#1e0d0d] hover:bg-[#2e1010] border border-[#5c1a1a] hover:border-red-500/50 text-red-400 text-xs font-bold px-3 py-1.5 transition-all cursor-pointer" do %>
+    👎 <span class="tabular-nums"><%= tip.votes_disagree_count %></span>
+  <% end %>
+
+  <%= button_to vote_url,
+    params: { vote_type: "quente" },
+    data: { turbo_stream: true },
+    class: "flex items-center gap-1.5 bg-[#1e1000] hover:bg-[#2e1800] border border-[#5c2a00] hover:border-orange-500/50 text-orange-400 text-xs font-bold px-3 py-1.5 transition-all cursor-pointer" do %>
+    🔥 <span class="tabular-nums"><%= tip.votes_hot_count %></span>
+  <% end %>
+
+  <button
+    data-controller="share"
+    data-share-text-value="<%= tip.share_text(defined?(rank) ? rank : '?') %>"
+    data-action="click->share#copy"
+    class="flex items-center gap-1.5 bg-[#152030] hover:bg-[#1a2535] border border-[#243040] hover:border-[#3d4f60] text-gray-500 hover:text-gray-300 text-xs font-bold px-3 py-1.5 transition-all ml-auto cursor-pointer"
+  >
+    📤 Compartilhar
+  </button>
+</div>

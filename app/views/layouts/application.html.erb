@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <title><%= content_for(:title) || "Bet do Dia" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Bet do Dia">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-[#0f1923] min-h-screen text-gray-100">
+    <nav class="bg-[#0d1f13] border-b border-[#1a3a22] sticky top-0 z-50 shadow-xl">
+      <div class="max-w-5xl mx-auto px-4 py-0 flex items-stretch justify-between">
+        <%= link_to root_path, class: "flex items-center gap-2 py-3" do %>
+          <span class="text-lg font-black tracking-tight text-[#00c853]">⚽</span>
+          <span class="text-lg font-black tracking-tight text-white">Bet<span class="text-[#00c853]">do</span>Dia</span>
+        <% end %>
+
+        <div class="flex items-center gap-2">
+          <% if user_signed_in? %>
+            <span class="text-xs text-gray-400 hidden sm:block px-3 border-r border-[#1a3a22]"><%= current_user.display_name %></span>
+            <% if current_user.admin? %>
+              <%= link_to "⚙ Admin", admin_root_path, class: "text-xs bg-[#f0b429] text-black font-black px-3 py-1.5 hover:bg-yellow-300 transition-colors" %>
+            <% end %>
+            <%= button_to "Sair", destroy_user_session_path, method: :delete,
+                class: "text-xs text-gray-300 hover:text-white hover:bg-[#1a3a22] px-4 py-3 transition-colors cursor-pointer border-l border-[#1a3a22]" %>
+          <% else %>
+            <%= link_to "Entrar", new_user_session_path, class: "text-xs text-gray-300 hover:text-white hover:bg-[#1a3a22] px-4 py-3 transition-colors border-l border-[#1a3a22]" %>
+            <%= link_to "Criar Conta", new_user_registration_path, class: "text-xs bg-[#00c853] text-black font-black px-4 py-3 hover:bg-[#00b84a] transition-colors" %>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-4 py-6">
+      <% if notice %>
+        <div class="mb-4 bg-[#0d2416] border border-[#1a5c2a] text-[#00c853] px-4 py-3 rounded text-sm flex items-center gap-2">
+          <span class="text-[#00c853]">✓</span> <%= notice %>
+        </div>
+      <% end %>
+      <% if alert %>
+        <div class="mb-4 bg-[#2a0d0d] border border-[#5c1a1a] text-red-400 px-4 py-3 rounded text-sm">
+          <%= alert %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <footer class="border-t border-[#1a3a22] mt-12 py-6 text-center text-xs text-gray-600">
+      BetdoDia &copy; <%= Date.current.year %> — Apenas para fins de entretenimento. Jogue com responsabilidade.
+    </footer>
+  </body>
+</html>

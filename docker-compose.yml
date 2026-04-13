@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bet_user
+      POSTGRES_PASSWORD: bet_password
+      POSTGRES_DB: today_bet_development
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bet_user"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    command: bin/rails server -b 0.0.0.0
+    volumes:
+      - .:/rails
+      - bundle_cache:/usr/local/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://bet_user:bet_password@db:5432/today_bet_development
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY:-5fcb3eb5e8c7f3a036124e89665d7637}
+      RAILS_ENV: development
+
+volumes:
+  pg_data:
+  bundle_cache:

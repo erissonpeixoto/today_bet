@@ -1,0 +1,7 @@
+<%= turbo_stream.append "comments_#{@tip.id}" do %>
+  <%= render "comments/comment", comment: @comment %>
+<% end %>
+
+<%= turbo_stream.replace "comment_count_#{@tip.id}" do %>
+  <%= @tip.comments_count %>
+<% end %>
