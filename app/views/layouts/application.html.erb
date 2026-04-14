@@ -32,7 +32,7 @@
           <% if user_signed_in? %>
             <span class="text-xs text-gray-400 hidden sm:block px-3 border-r border-[#1a3a22]"><%= current_user.display_name %></span>
             <% if current_user.admin? %>
-              <%= link_to "⚙ Admin", admin_root_path, class: "text-xs bg-[#f0b429] text-black font-black px-3 py-1.5 hover:bg-yellow-300 transition-colors" %>
+              <%= link_to "⚙ Admin", admin_root_path, class: "text-xs bg-[#f5c518] text-black font-black px-3 py-1.5 hover:bg-[#ffd700] transition-colors" %>
             <% end %>
             <%= button_to "Sair", destroy_user_session_path, method: :delete,
                 class: "text-xs text-gray-300 hover:text-white hover:bg-[#1a3a22] px-4 py-3 transition-colors cursor-pointer border-l border-[#1a3a22]" %>
@@ -59,7 +59,7 @@
       <%= yield %>
     </main>
 
-    <footer class="border-t border-[#1a3a22] mt-12 py-6 text-center text-xs text-gray-600">
+    <footer class="border-t border-[#1a3a22] mt-12 py-6 text-center text-xs text-gray-500">
       BetdoDia &copy; <%= Date.current.year %> — Apenas para fins de entretenimento. Jogue com responsabilidade.
     </footer>
   </body>

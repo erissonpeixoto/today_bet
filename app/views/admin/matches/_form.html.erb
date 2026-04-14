@@ -13,15 +13,33 @@
   <div class="grid sm:grid-cols-2 gap-5">
     <div>
       <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Time Mandante</label>
-      <%= f.text_field :home_team,
-        class: "w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-slate-300",
-        placeholder: "Ex: Flamengo" %>
+      <%= f.collection_select :home_club_id,
+        FootballClub.order(:name), :id, :name,
+        { include_blank: "Selecione o clube..." },
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" %>
+      <% if match.home_club %>
+        <div class="flex items-center gap-2 mt-2">
+          <% if match.home_club.logo_url.present? %>
+            <img src="<%= match.home_club.logo_url %>" class="w-5 h-5 object-contain" onerror="this.style.display='none'">
+          <% end %>
+          <span class="text-xs text-slate-500"><%= match.home_club.name %></span>
+        </div>
+      <% end %>
     </div>
     <div>
       <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">Time Visitante</label>
-      <%= f.text_field :away_team,
-        class: "w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition placeholder-slate-300",
-        placeholder: "Ex: Palmeiras" %>
+      <%= f.collection_select :away_club_id,
+        FootballClub.order(:name), :id, :name,
+        { include_blank: "Selecione o clube..." },
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2.5 text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition" %>
+      <% if match.away_club %>
+        <div class="flex items-center gap-2 mt-2">
+          <% if match.away_club.logo_url.present? %>
+            <img src="<%= match.away_club.logo_url %>" class="w-5 h-5 object-contain" onerror="this.style.display='none'">
+          <% end %>
+          <span class="text-xs text-slate-500"><%= match.away_club.name %></span>
+        </div>
+      <% end %>
     </div>
   </div>
 

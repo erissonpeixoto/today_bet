@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_11_173853) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_14_203738) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,14 +24,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_11_173853) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
-  create_table "matches", force: :cascade do |t|
-    t.string "away_team", null: false
+  create_table "football_clubs", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "home_team", null: false
+    t.string "logo_url"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_football_clubs_on_name", unique: true
+  end
+
+  create_table "matches", force: :cascade do |t|
+    t.bigint "away_club_id"
+    t.datetime "created_at", null: false
+    t.bigint "home_club_id"
     t.string "league", null: false
     t.datetime "match_date", null: false
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["away_club_id"], name: "index_matches_on_away_club_id"
+    t.index ["home_club_id"], name: "index_matches_on_home_club_id"
     t.index ["match_date"], name: "index_matches_on_match_date"
     t.index ["status"], name: "index_matches_on_status"
   end
@@ -85,6 +95,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_11_173853) do
 
   add_foreign_key "comments", "tips"
   add_foreign_key "comments", "users"
+  add_foreign_key "matches", "football_clubs", column: "away_club_id"
+  add_foreign_key "matches", "football_clubs", column: "home_club_id"
   add_foreign_key "tips", "matches"
   add_foreign_key "tips", "users"
   add_foreign_key "votes", "tips"

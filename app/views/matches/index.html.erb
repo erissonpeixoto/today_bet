@@ -11,13 +11,13 @@
 </div>
 
 <% if @matches.empty? %>
-  <div class="text-center py-20 text-gray-600">
+  <div class="text-center py-20 text-gray-500">
     <div class="text-5xl mb-4">📅</div>
     <p class="text-base font-semibold text-gray-500">Nenhum jogo disponível hoje.</p>
-    <p class="text-xs mt-2 text-gray-600">Volte mais tarde!</p>
+    <p class="text-xs mt-2 text-gray-500">Volte mais tarde!</p>
   </div>
 <% else %>
-  <div class="grid gap-0.5 sm:grid-cols-2">
+  <div class="grid gap-3 sm:grid-cols-2">
     <% @matches.each do |match| %>
       <%= link_to match_path(match), class: "block bg-[#1a2535] hover:bg-[#1f2d40] border border-[#243040] hover:border-[#00c853]/30 transition-all group" do %>
 
@@ -33,7 +33,7 @@
                 Ao Vivo
               </span>
             <% elsif match.finished? %>
-              <span class="text-xs text-gray-600 uppercase font-semibold">Encerrado</span>
+              <span class="text-xs text-gray-500 uppercase font-semibold">Encerrado</span>
             <% else %>
               <span class="text-xs text-gray-400 font-mono"><%= match.formatted_date %></span>
             <% end %>
@@ -43,24 +43,30 @@
         <%# Teams %>
         <div class="flex items-center justify-center gap-4 px-4 py-5">
           <div class="text-center flex-1">
-            <p class="font-black text-white text-base leading-tight group-hover:text-[#00c853] transition-colors"><%= match.home_team %></p>
-            <p class="text-[10px] text-gray-600 mt-0.5 uppercase tracking-wide">Mandante</p>
+            <% if match.home_club&.logo_url.present? %>
+              <img src="<%= match.home_club.logo_url %>" alt="<%= match.home_team %>" class="w-10 h-10 object-contain mx-auto mb-2" onerror="this.style.display='none'">
+            <% end %>
+            <p class="font-black text-white text-sm leading-tight group-hover:text-[#00c853] transition-colors"><%= match.home_team %></p>
+            <p class="text-[10px] text-gray-500 mt-0.5 uppercase tracking-wide">Mandante</p>
           </div>
           <div class="text-center px-3">
-            <span class="text-lg font-black text-[#243040]">VS</span>
+            <span class="text-lg font-black text-gray-500">VS</span>
           </div>
           <div class="text-center flex-1">
-            <p class="font-black text-white text-base leading-tight group-hover:text-[#00c853] transition-colors"><%= match.away_team %></p>
-            <p class="text-[10px] text-gray-600 mt-0.5 uppercase tracking-wide">Visitante</p>
+            <% if match.away_club&.logo_url.present? %>
+              <img src="<%= match.away_club.logo_url %>" alt="<%= match.away_team %>" class="w-10 h-10 object-contain mx-auto mb-2" onerror="this.style.display='none'">
+            <% end %>
+            <p class="font-black text-white text-sm leading-tight group-hover:text-[#00c853] transition-colors"><%= match.away_team %></p>
+            <p class="text-[10px] text-gray-500 mt-0.5 uppercase tracking-wide">Visitante</p>
           </div>
         </div>
 
         <%# Footer bar %>
         <div class="flex items-center justify-between px-4 py-2 border-t border-[#243040]">
-          <span class="text-[11px] text-gray-600">
+          <span class="text-[11px] text-gray-500">
             💬 <%= match.tips.count %> palpite<%= match.tips.count == 1 ? "" : "s" %>
           </span>
-          <span class="text-[11px] font-bold text-[#00c853] uppercase tracking-wide group-hover:underline">
+          <span class="text-[11px] font-bold text-[#f5c518] uppercase tracking-wide group-hover:underline">
             Ver palpites →
           </span>
         </div>
@@ -74,7 +80,7 @@
       <% if @pagy.prev %>
         <%= link_to "← Anterior", matches_path(page: @pagy.prev), class: "px-4 py-2 bg-[#1a2535] border border-[#243040] text-gray-400 hover:text-white hover:border-[#00c853]/50 transition" %>
       <% end %>
-      <span class="px-4 py-2 text-gray-600 bg-[#152030]">Página <%= @pagy.page %> de <%= @pagy.pages %></span>
+      <span class="px-4 py-2 text-gray-500 bg-[#152030]">Página <%= @pagy.page %> de <%= @pagy.pages %></span>
       <% if @pagy.next %>
         <%= link_to "Próxima →", matches_path(page: @pagy.next), class: "px-4 py-2 bg-[#1a2535] border border-[#243040] text-gray-400 hover:text-white hover:border-[#00c853]/50 transition" %>
       <% end %>

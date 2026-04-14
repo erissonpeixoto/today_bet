@@ -1,0 +1,25 @@
+<% content_for :title, "Recuperar Senha - Bet do Dia" %>
+
+<div class="max-w-sm mx-auto mt-8">
+  <div class="bg-[#1a2535] border border-[#243040] p-6">
+    <h1 class="text-lg font-black text-white uppercase tracking-wide mb-1">Recuperar Senha</h1>
+    <p class="text-xs text-gray-500 mb-6">Enviaremos um link de redefinição para o seu e-mail.</p>
+
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">E-mail</label>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email",
+            class: "w-full bg-[#0f1923] border border-[#2d3f50] text-white rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#00c853] focus:ring-1 focus:ring-[#00c853] transition-colors" %>
+        </div>
+
+        <%= f.submit "Enviar instruções",
+          class: "w-full bg-[#00c853] hover:bg-[#00b84a] text-black font-black py-3 rounded text-sm uppercase tracking-wider transition-colors cursor-pointer mt-2" %>
+      </div>
+    <% end %>
+
+    <%= render "devise/shared/links" %>
+  </div>
+</div>

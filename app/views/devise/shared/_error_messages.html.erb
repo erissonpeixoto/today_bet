@@ -1,0 +1,7 @@
+<% if resource.errors.any? %>
+  <div class="bg-[#2a0d0d] border border-[#5c1a1a] rounded p-3 text-xs text-red-400 mb-4" data-turbo-cache="false">
+    <% resource.errors.full_messages.each do |message| %>
+      <p>• <%= message %></p>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,36 @@
+<% content_for :title, "Entrar - Bet do Dia" %>
+
+<div class="max-w-sm mx-auto mt-8">
+  <div class="bg-[#1a2535] border border-[#243040] p-6">
+    <h1 class="text-lg font-black text-white uppercase tracking-wide mb-1">Entrar</h1>
+    <p class="text-xs text-gray-500 mb-6">Bem-vindo de volta. Faça login para palpitar.</p>
+
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">E-mail</label>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email",
+            class: "w-full bg-[#0f1923] border border-[#2d3f50] text-white rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#00c853] focus:ring-1 focus:ring-[#00c853] transition-colors" %>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">Senha</label>
+          <%= f.password_field :password, autocomplete: "current-password",
+            class: "w-full bg-[#0f1923] border border-[#2d3f50] text-white rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#00c853] focus:ring-1 focus:ring-[#00c853] transition-colors" %>
+        </div>
+
+        <% if devise_mapping.rememberable? %>
+          <div class="flex items-center gap-2">
+            <%= f.check_box :remember_me, class: "accent-[#00c853]" %>
+            <label class="text-xs text-gray-400"><%= f.label :remember_me, "Lembrar de mim" %></label>
+          </div>
+        <% end %>
+
+        <%= f.submit "Entrar",
+          class: "w-full bg-[#00c853] hover:bg-[#00b84a] text-black font-black py-3 rounded text-sm uppercase tracking-wider transition-colors cursor-pointer mt-2" %>
+      </div>
+    <% end %>
+
+    <%= render "devise/shared/links" %>
+  </div>
+</div>
