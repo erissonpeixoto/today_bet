@@ -16,21 +16,22 @@ default: &default
   adapter: postgresql
   encoding: unicode
   max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  url: <%= ENV["DATABASE_URL"] %>
 
 development:
   <<: *default
   database: today_bet_development
-  host: <%= ENV.fetch("DB_HOST", "localhost") %>
-  username: <%= ENV.fetch("DB_USER", "bet_user") %>
-  password: <%= ENV.fetch("DB_PASSWORD", "bet_password") %>
+  host: localhost
+  port: 5433
+  username: bet_user
+  password: bet_password
 
 test:
   <<: *default
   database: today_bet_test
-  host: <%= ENV.fetch("DB_HOST", "localhost") %>
-  username: <%= ENV.fetch("DB_USER", "bet_user") %>
-  password: <%= ENV.fetch("DB_PASSWORD", "bet_password") %>
+  host: localhost
+  port: 5433
+  username: bet_user
+  password: bet_password
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
