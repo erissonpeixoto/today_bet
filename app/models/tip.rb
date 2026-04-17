@@ -3,16 +3,18 @@ class Tip < ApplicationRecord
   belongs_to :match
 
   enum :market, {
-    over_2_5:        0,
-    under_2_5:       1,
-    ambos_marcam:    2,
-    vitoria_mandante: 3,
-    vitoria_visitante: 4,
-    empate:          5,
-    mais_escanteios: 6,
-    menos_escanteios: 7,
-    over_1_5:        8,
-    under_1_5:       9
+    vitoria_mandante:           0,
+    vitoria_visitante:          1,
+    empate:                     2,
+    ambos_marcam:               3,
+    over_1_5:                   4,
+    under_1_5:                  5,
+    over_2_5:                   6,
+    under_2_5:                  7,
+    mais_escanteios_mandante:   8,
+    mais_escanteios_visitante:  9,
+    menos_escanteios_mandante:  10,
+    menos_escanteios_visitante: 11
   }
 
   enum :confidence, { baixa: 0, media: 1, alta: 2 }
@@ -33,16 +35,18 @@ class Tip < ApplicationRecord
   scope :most_confident, -> { where(confidence: :alta).order(votes_agree_count: :desc) }
 
   MARKET_LABELS = {
-    "over_2_5"          => "Over 2.5 Gols",
-    "under_2_5"         => "Under 2.5 Gols",
-    "ambos_marcam"      => "Ambos Marcam",
-    "vitoria_mandante"  => "Vitória Mandante",
-    "vitoria_visitante" => "Vitória Visitante",
-    "empate"            => "Empate",
-    "mais_escanteios"   => "Mais Escanteios",
-    "menos_escanteios"  => "Menos Escanteios",
-    "over_1_5"          => "Over 1.5 Gols",
-    "under_1_5"         => "Under 1.5 Gols"
+    "vitoria_mandante"          => "Vitória Mandante",
+    "vitoria_visitante"         => "Vitória Visitante",
+    "empate"                    => "Empate",
+    "ambos_marcam"              => "Ambos Marcam",
+    "over_1_5"                  => "Over 1.5 Gols",
+    "under_1_5"                 => "Under 1.5 Gols",
+    "over_2_5"                  => "Over 2.5 Gols",
+    "under_2_5"                 => "Under 2.5 Gols",
+    "mais_escanteios_mandante"  => "Mais Escanteios (Mandante)",
+    "mais_escanteios_visitante" => "Mais Escanteios (Visitante)",
+    "menos_escanteios_mandante"  => "Menos Escanteios (Mandante)",
+    "menos_escanteios_visitante" => "Menos Escanteios (Visitante)"
   }.freeze
 
   CONFIDENCE_LABELS = {
