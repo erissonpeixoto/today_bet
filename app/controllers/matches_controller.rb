@@ -1,6 +1,7 @@
 class MatchesController < ApplicationController
   def index
     @pagy, @matches = pagy(Match.order(:match_date), items: 12)
+    @top_users = User.ranked.limit(5)
   end
 
   def show

@@ -10,9 +10,17 @@ Rails.application.routes.draw do
     end
   end
 
+  get "ranking", to: "ranking#index", as: :ranking
+
   namespace :admin do
     root "dashboard#index"
-    resources :matches
+    resources :matches do
+      resources :tips, only: [:index] do
+        collection do
+          patch :set_result
+        end
+      end
+    end
     resources :football_clubs
   end
 

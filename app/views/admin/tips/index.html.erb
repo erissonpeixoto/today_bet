@@ -1,0 +1,123 @@
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-xl font-bold text-slate-900">Resultados por Mercado</h1>
+    <p class="text-sm text-slate-400 mt-0.5">
+      <%= @match.title %> · <%= @match.league %> · <%= @match.formatted_date %>
+    </p>
+  </div>
+  <%= link_to "← Jogos", admin_matches_path, class: "text-sm text-slate-500 hover:text-slate-700" %>
+</div>
+
+<% if @market_groups.empty? %>
+  <div class="text-center py-12 text-slate-400">
+    <p class="text-lg">Nenhum palpite para esse jogo ainda.</p>
+  </div>
+<% else %>
+  <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-slate-50 border-b border-slate-200 text-left">
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Mercado</th>
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider text-center">Apostadores</th>
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Status atual</th>
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Definir resultado</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        <% @market_groups.each do |market, tips| %>
+          <%
+            statuses = tips.map(&:correct).uniq
+            if statuses == [true]
+              current_status = :correct
+            elsif statuses == [false]
+              current_status = :wrong
+            else
+              current_status = :pending
+            end
+          %>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="px-6 py-4 font-semibold text-slate-800">
+              <%= Tip::MARKET_LABELS[market] || market.humanize %>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span class="text-xs font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full">
+                <%= tips.count %> pessoa<%= tips.count == 1 ? "" : "s" %>
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <% if current_status == :correct %>
+                <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                  ✅ Acertaram
+                </span>
+              <% elsif current_status == :wrong %>
+                <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-full">
+                  ❌ Erraram
+                </span>
+              <% else %>
+                <span class="text-xs font-semibold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
+                  — Aguardando
+                </span>
+              <% end %>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2">
+                <%= button_to "✅ Todos acertaram",
+                    set_result_admin_match_tips_path(@match, market: market, correct: "true"),
+                    method: :patch,
+                    class: "text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors #{current_status == :correct ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-emerald-700 border-emerald-300 hover:bg-emerald-50'}" %>
+
+                <%= button_to "❌ Todos erraram",
+                    set_result_admin_match_tips_path(@match, market: market, correct: "false"),
+                    method: :patch,
+                    class: "text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors #{current_status == :wrong ? 'bg-red-600 text-white border-red-600' : 'bg-white text-red-600 border-red-300 hover:bg-red-50'}" %>
+
+                <% if current_status != :pending %>
+                  <%= button_to "↩",
+                      set_result_admin_match_tips_path(@match, market: market, correct: "nil"),
+                      method: :patch,
+                      title: "Limpar resultado",
+                      class: "text-xs text-slate-400 hover:text-slate-600 px-2 py-1.5 hover:bg-slate-100 rounded transition-colors" %>
+                <% end %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <%# Resumo dos apostadores %>
+  <div class="mt-6 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+    <div class="px-6 py-3 bg-slate-50 border-b border-slate-200">
+      <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Detalhe por apostador</h2>
+    </div>
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left border-b border-slate-100">
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400">Apostador</th>
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400">Mercado</th>
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400">Confiança</th>
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400 text-center">Resultado</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-50">
+        <% @market_groups.each do |market, tips| %>
+          <% tips.each do |tip| %>
+            <tr class="hover:bg-slate-50">
+              <td class="px-6 py-3 font-medium text-slate-700"><%= tip.user.display_name %></td>
+              <td class="px-6 py-3 text-slate-500 text-xs"><%= Tip::MARKET_LABELS[market] %></td>
+              <td class="px-6 py-3">
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full <%= tip.alta? ? 'bg-red-50 text-red-600' : tip.media? ? 'bg-orange-50 text-orange-600' : 'bg-yellow-50 text-yellow-700' %>">
+                  <%= tip.confidence_label %>
+                </span>
+              </td>
+              <td class="px-6 py-3 text-center text-base">
+                <% if tip.correct == true %>✅<% elsif tip.correct == false %>❌<% else %><span class="text-slate-300">—</span><% end %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

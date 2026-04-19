@@ -44,6 +44,8 @@
           </td>
           <td class="px-6 py-4">
             <div class="flex items-center gap-3 justify-end">
+              <%= link_to "Resultados", admin_match_tips_path(match),
+                class: "text-xs font-semibold text-emerald-600 hover:text-emerald-800 hover:underline transition-colors" %>
               <%= link_to "Editar", edit_admin_match_path(match),
                 class: "text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline transition-colors" %>
               <%= button_to "Excluir", admin_match_path(match), method: :delete,

@@ -1,89 +1,225 @@
 <% content_for :title, "Jogos do Dia - Bet do Dia" %>
 
-<div class="mb-6 flex items-end justify-between">
-  <div>
-    <h1 class="text-xl font-black text-white uppercase tracking-wide">Jogos de Hoje</h1>
-    <p class="text-gray-500 text-xs mt-0.5">Palpite nos melhores mercados e suba no ranking</p>
+<%# ——— Ranking strip: visível apenas em mobile/tablet (< lg) ——— %>
+<div class="lg:hidden mb-5">
+  <div class="bg-[#1a2535] border border-[#243040]">
+
+    <div class="flex items-center justify-between px-4 py-2.5 border-b border-[#243040] bg-[#152030]">
+      <span class="text-xs font-black text-white uppercase tracking-wider">🏆 Top Apostadores</span>
+      <%= link_to "Ver ranking completo →", ranking_path, class: "text-[10px] text-[#00c853] hover:underline font-bold uppercase tracking-wide" %>
+    </div>
+
+    <% if @top_users.empty? %>
+      <div class="px-4 py-4 text-center">
+        <p class="text-xs text-gray-500">Nenhum resultado avaliado ainda.</p>
+        <p class="text-[10px] text-gray-600 mt-1">Poste palpites e aguarde os resultados!</p>
+      </div>
+    <% else %>
+      <%# Scroll horizontal com os cards %>
+      <div class="flex gap-0 overflow-x-auto divide-x divide-[#243040]" style="-webkit-overflow-scrolling:touch">
+        <% @top_users.each_with_index do |user, idx| %>
+          <div class="flex flex-col items-center px-5 py-4 shrink-0 min-w-[110px]">
+            <%# Medalha %>
+            <span class="text-xl mb-2">
+              <%= idx == 0 ? "🥇" : idx == 1 ? "🥈" : idx == 2 ? "🥉" : "#{idx + 1}º" %>
+            </span>
+            <%# Avatar %>
+            <div class="w-10 h-10 rounded-full bg-[#243040] border-2 border-[#00c853]/30 flex items-center justify-center text-sm font-black text-[#00c853] mb-2">
+              <%= user.username[0].upcase %>
+            </div>
+            <%# Nome %>
+            <p class="text-[11px] font-bold text-white truncate max-w-[90px] text-center"><%= user.display_name %></p>
+            <%# Score %>
+            <p class="text-base font-black text-[#00c853] leading-tight mt-0.5"><%= user.ranking_score %></p>
+            <p class="text-[9px] text-gray-500 uppercase tracking-wide">pontos</p>
+            <p class="text-[10px] text-gray-500 mt-1"><%= user.correct_tips_count %> acerto<%= user.correct_tips_count == 1 ? "" : "s" %></p>
+          </div>
+        <% end %>
+
+        <%# CTA final no scroll %>
+        <%= link_to ranking_path, class: "flex flex-col items-center justify-center px-6 py-4 shrink-0 min-w-[90px] text-[#f5c518] hover:bg-[#1f2d40] transition-colors" do %>
+          <span class="text-2xl mb-1">→</span>
+          <p class="text-[10px] font-bold uppercase tracking-wide text-center">Ver<br>todos</p>
+        <% end %>
+      </div>
+
+      <%# Legenda de pontuação em mobile %>
+      <div class="px-4 py-2 border-t border-[#243040] flex items-center justify-center gap-4 bg-[#141e2b]">
+        <span class="text-[10px] text-gray-500">🟡 Baixa = <span class="text-gray-300 font-bold">1pt</span></span>
+        <span class="text-gray-700">·</span>
+        <span class="text-[10px] text-gray-500">🟠 Média = <span class="text-gray-300 font-bold">2pts</span></span>
+        <span class="text-gray-700">·</span>
+        <span class="text-[10px] text-gray-500">🔴 Alta = <span class="text-gray-300 font-bold">3pts</span></span>
+      </div>
+    <% end %>
   </div>
-  <span class="text-xs text-[#00c853] bg-[#0d2416] border border-[#1a5c2a] px-3 py-1 rounded font-bold uppercase tracking-wide">
-    ⚽ Ao Vivo &amp; Agendados
-  </span>
 </div>
 
-<% if @matches.empty? %>
-  <div class="text-center py-20 text-gray-500">
-    <div class="text-5xl mb-4">📅</div>
-    <p class="text-base font-semibold text-gray-500">Nenhum jogo disponível hoje.</p>
-    <p class="text-xs mt-2 text-gray-500">Volte mais tarde!</p>
-  </div>
-<% else %>
-  <div class="grid gap-3 sm:grid-cols-2">
-    <% @matches.each do |match| %>
-      <%= link_to match_path(match), class: "block bg-[#1a2535] hover:bg-[#1f2d40] border border-[#243040] hover:border-[#00c853]/30 transition-all group" do %>
+<%# ——— Layout principal: matches + sidebar desktop ——— %>
+<div class="flex gap-6 items-start">
 
-        <%# League + time bar %>
-        <div class="flex items-center justify-between px-4 py-2 border-b border-[#243040] bg-[#152030]">
-          <span class="text-xs font-bold text-[#00c853] uppercase tracking-wide">
-            <%= match.league %>
-          </span>
-          <div class="flex items-center gap-2">
-            <% if match.live? %>
-              <span class="flex items-center gap-1 text-xs font-black text-red-400 uppercase">
-                <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse inline-block"></span>
-                Ao Vivo
+  <%# Coluna principal - Jogos %>
+  <div class="flex-1 min-w-0">
+    <div class="mb-5 flex items-end justify-between">
+      <div>
+        <h1 class="text-xl font-black text-white uppercase tracking-wide">Jogos de Hoje</h1>
+        <p class="text-gray-500 text-xs mt-0.5">Palpite nos melhores mercados e suba no ranking</p>
+      </div>
+      <span class="text-xs text-[#00c853] bg-[#0d2416] border border-[#1a5c2a] px-3 py-1 rounded font-bold uppercase tracking-wide">
+        ⚽ Ao Vivo &amp; Agendados
+      </span>
+    </div>
+
+    <% if @matches.empty? %>
+      <div class="text-center py-20 text-gray-500">
+        <div class="text-5xl mb-4">📅</div>
+        <p class="text-base font-semibold text-gray-500">Nenhum jogo disponível hoje.</p>
+        <p class="text-xs mt-2 text-gray-500">Volte mais tarde!</p>
+      </div>
+    <% else %>
+      <div class="grid gap-3 sm:grid-cols-2">
+        <% @matches.each do |match| %>
+          <%= link_to match_path(match), class: "block bg-[#1a2535] hover:bg-[#1f2d40] border border-[#243040] hover:border-[#00c853]/30 transition-all group" do %>
+
+            <%# League + time bar %>
+            <div class="flex items-center justify-between px-4 py-2 border-b border-[#243040] bg-[#152030]">
+              <span class="text-xs font-bold text-[#00c853] uppercase tracking-wide">
+                <%= match.league %>
               </span>
-            <% elsif match.finished? %>
-              <span class="text-xs text-gray-500 uppercase font-semibold">Encerrado</span>
-            <% else %>
-              <span class="text-xs text-gray-400 font-mono"><%= match.formatted_date %></span>
-            <% end %>
-          </div>
-        </div>
+              <div class="flex items-center gap-2">
+                <% if match.live? %>
+                  <span class="flex items-center gap-1 text-xs font-black text-red-400 uppercase">
+                    <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse inline-block"></span>
+                    Ao Vivo
+                  </span>
+                <% elsif match.finished? %>
+                  <span class="text-xs text-gray-500 uppercase font-semibold">Encerrado</span>
+                <% else %>
+                  <span class="text-xs text-gray-400 font-mono"><%= match.formatted_date %></span>
+                <% end %>
+              </div>
+            </div>
 
-        <%# Teams %>
-        <div class="flex items-center justify-center gap-4 px-4 py-5">
-          <div class="text-center flex-1">
-            <% if match.home_club&.logo_url.present? %>
-              <img src="<%= match.home_club.logo_url %>" alt="<%= match.home_team %>" class="w-10 h-10 object-contain mx-auto mb-2" onerror="this.style.display='none'">
-            <% end %>
-            <p class="font-black text-white text-sm leading-tight group-hover:text-[#00c853] transition-colors"><%= match.home_team %></p>
-            <p class="text-[10px] text-gray-500 mt-0.5 uppercase tracking-wide">Mandante</p>
-          </div>
-          <div class="text-center px-3">
-            <span class="text-lg font-black text-gray-500">VS</span>
-          </div>
-          <div class="text-center flex-1">
-            <% if match.away_club&.logo_url.present? %>
-              <img src="<%= match.away_club.logo_url %>" alt="<%= match.away_team %>" class="w-10 h-10 object-contain mx-auto mb-2" onerror="this.style.display='none'">
-            <% end %>
-            <p class="font-black text-white text-sm leading-tight group-hover:text-[#00c853] transition-colors"><%= match.away_team %></p>
-            <p class="text-[10px] text-gray-500 mt-0.5 uppercase tracking-wide">Visitante</p>
-          </div>
-        </div>
+            <%# Teams %>
+            <div class="flex items-center justify-center gap-4 px-4 py-5">
+              <div class="text-center flex-1">
+                <% if match.home_club&.logo_url.present? %>
+                  <img src="<%= match.home_club.logo_url %>" alt="<%= match.home_team %>" class="w-10 h-10 object-contain mx-auto mb-2" onerror="this.style.display='none'">
+                <% end %>
+                <p class="font-black text-white text-sm leading-tight group-hover:text-[#00c853] transition-colors"><%= match.home_team %></p>
+                <p class="text-[10px] text-gray-500 mt-0.5 uppercase tracking-wide">Mandante</p>
+              </div>
+              <div class="text-center px-3">
+                <span class="text-lg font-black text-gray-500">VS</span>
+              </div>
+              <div class="text-center flex-1">
+                <% if match.away_club&.logo_url.present? %>
+                  <img src="<%= match.away_club.logo_url %>" alt="<%= match.away_team %>" class="w-10 h-10 object-contain mx-auto mb-2" onerror="this.style.display='none'">
+                <% end %>
+                <p class="font-black text-white text-sm leading-tight group-hover:text-[#00c853] transition-colors"><%= match.away_team %></p>
+                <p class="text-[10px] text-gray-500 mt-0.5 uppercase tracking-wide">Visitante</p>
+              </div>
+            </div>
 
-        <%# Footer bar %>
-        <div class="flex items-center justify-between px-4 py-2 border-t border-[#243040]">
-          <span class="text-[11px] text-gray-500">
-            💬 <%= match.tips.count %> palpite<%= match.tips.count == 1 ? "" : "s" %>
-          </span>
-          <span class="text-[11px] font-bold text-[#f5c518] uppercase tracking-wide group-hover:underline">
-            Ver palpites →
-          </span>
-        </div>
+            <%# Footer bar %>
+            <div class="flex items-center justify-between px-4 py-2 border-t border-[#243040]">
+              <span class="text-[11px] text-gray-500">
+                💬 <%= match.tips.count %> palpite<%= match.tips.count == 1 ? "" : "s" %>
+              </span>
+              <span class="text-[11px] font-bold text-[#f5c518] uppercase tracking-wide group-hover:underline">
+                Ver palpites →
+              </span>
+            </div>
 
+          <% end %>
+        <% end %>
+      </div>
+
+      <% if @pagy.pages > 1 %>
+        <div class="mt-6 flex justify-center gap-1 text-xs">
+          <% if @pagy.prev %>
+            <%= link_to "← Anterior", matches_path(page: @pagy.prev), class: "px-4 py-2 bg-[#1a2535] border border-[#243040] text-gray-400 hover:text-white hover:border-[#00c853]/50 transition" %>
+          <% end %>
+          <span class="px-4 py-2 text-gray-500 bg-[#152030]">Página <%= @pagy.page %> de <%= @pagy.pages %></span>
+          <% if @pagy.next %>
+            <%= link_to "Próxima →", matches_path(page: @pagy.next), class: "px-4 py-2 bg-[#1a2535] border border-[#243040] text-gray-400 hover:text-white hover:border-[#00c853]/50 transition" %>
+          <% end %>
+        </div>
       <% end %>
     <% end %>
   </div>
 
-  <% if @pagy.pages > 1 %>
-    <div class="mt-6 flex justify-center gap-1 text-xs">
-      <% if @pagy.prev %>
-        <%= link_to "← Anterior", matches_path(page: @pagy.prev), class: "px-4 py-2 bg-[#1a2535] border border-[#243040] text-gray-400 hover:text-white hover:border-[#00c853]/50 transition" %>
-      <% end %>
-      <span class="px-4 py-2 text-gray-500 bg-[#152030]">Página <%= @pagy.page %> de <%= @pagy.pages %></span>
-      <% if @pagy.next %>
-        <%= link_to "Próxima →", matches_path(page: @pagy.next), class: "px-4 py-2 bg-[#1a2535] border border-[#243040] text-gray-400 hover:text-white hover:border-[#00c853]/50 transition" %>
+  <%# ——— Sidebar: visível apenas em desktop (lg+) ——— %>
+  <div class="hidden lg:block w-64 shrink-0">
+
+    <%# Card ranking %>
+    <div class="bg-[#1a2535] border border-[#243040] overflow-hidden sticky top-20">
+      <div class="px-4 py-3 bg-[#152030] border-b border-[#243040] flex items-center justify-between">
+        <span class="text-xs font-black text-white uppercase tracking-wider">🏆 Top Apostadores</span>
+        <%= link_to "Ver todos", ranking_path, class: "text-[10px] text-[#00c853] hover:underline font-bold uppercase" %>
+      </div>
+
+      <% if @top_users.empty? %>
+        <div class="px-4 py-6 text-center">
+          <p class="text-xs text-gray-500">Nenhum resultado avaliado ainda.</p>
+        </div>
+      <% else %>
+        <div class="divide-y divide-[#243040]">
+          <% @top_users.each_with_index do |user, idx| %>
+            <div class="flex items-center gap-3 px-4 py-3">
+              <div class="shrink-0 w-5 text-center">
+                <% if idx == 0 %>
+                  <span class="text-base">🥇</span>
+                <% elsif idx == 1 %>
+                  <span class="text-base">🥈</span>
+                <% elsif idx == 2 %>
+                  <span class="text-base">🥉</span>
+                <% else %>
+                  <span class="text-xs text-gray-500 font-bold"><%= idx + 1 %></span>
+                <% end %>
+              </div>
+              <div class="w-8 h-8 rounded-full bg-[#243040] flex items-center justify-center text-xs font-black text-[#00c853] shrink-0">
+                <%= user.username[0].upcase %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-bold text-white truncate"><%= user.display_name %></p>
+                <p class="text-[10px] text-gray-500"><%= user.correct_tips_count %> acerto<%= user.correct_tips_count == 1 ? "" : "s" %></p>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="text-sm font-black text-[#00c853]"><%= user.ranking_score %></p>
+                <p class="text-[10px] text-gray-500">pts</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="px-4 py-3 border-t border-[#243040]">
+          <%= link_to ranking_path, class: "block text-center text-xs font-bold text-[#f5c518] hover:text-yellow-300 transition uppercase tracking-wide" do %>
+            Ver ranking completo →
+          <% end %>
+        </div>
       <% end %>
     </div>
-  <% end %>
-<% end %>
+
+    <%# Como funciona %>
+    <div class="mt-3 bg-[#1a2535] border border-[#243040] px-4 py-4">
+      <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2.5">Como funciona?</p>
+      <div class="space-y-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xs shrink-0">🟡</span>
+          <p class="text-[11px] text-gray-500">Baixa confiança = <span class="text-white font-bold">1 pt</span></p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs shrink-0">🟠</span>
+          <p class="text-[11px] text-gray-500">Média confiança = <span class="text-white font-bold">2 pts</span></p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs shrink-0">🔴</span>
+          <p class="text-[11px] text-gray-500">Alta confiança = <span class="text-white font-bold">3 pts</span></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
