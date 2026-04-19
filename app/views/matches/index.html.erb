@@ -55,20 +55,22 @@
   </div>
 </div>
 
+<%# ——— Cabeçalho full-width ——— %>
+<div class="mb-5 flex items-start justify-between">
+  <div>
+    <h1 class="text-xl font-black text-white uppercase tracking-wide">Jogos de Hoje</h1>
+    <p class="text-gray-500 text-xs mt-0.5">Palpite nos melhores mercados e suba no ranking</p>
+  </div>
+  <span class="text-xs text-[#00c853] bg-[#0d2416] border border-[#1a5c2a] px-3 py-1 rounded font-bold uppercase tracking-wide">
+    ⚽ Ao Vivo &amp; Agendados
+  </span>
+</div>
+
 <%# ——— Layout principal: matches + sidebar desktop ——— %>
 <div class="flex gap-6 items-start">
 
   <%# Coluna principal - Jogos %>
   <div class="flex-1 min-w-0">
-    <div class="mb-5 flex items-end justify-between">
-      <div>
-        <h1 class="text-xl font-black text-white uppercase tracking-wide">Jogos de Hoje</h1>
-        <p class="text-gray-500 text-xs mt-0.5">Palpite nos melhores mercados e suba no ranking</p>
-      </div>
-      <span class="text-xs text-[#00c853] bg-[#0d2416] border border-[#1a5c2a] px-3 py-1 rounded font-bold uppercase tracking-wide">
-        ⚽ Ao Vivo &amp; Agendados
-      </span>
-    </div>
 
     <% if @matches.empty? %>
       <div class="text-center py-20 text-gray-500">
