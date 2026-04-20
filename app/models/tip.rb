@@ -55,7 +55,8 @@ class Tip < ApplicationRecord
     "alta"  => "Alta 🔴"
   }.freeze
 
-  CONFIDENCE_WEIGHTS = { "baixa" => 1, "media" => 2, "alta" => 3 }.freeze
+  CONFIDENCE_WEIGHTS   = { "baixa" => 1, "media" => 2, "alta" => 3 }.freeze
+  CONFIDENCE_PENALTIES = { "baixa" => 0, "media" => -1, "alta" => -2 }.freeze
 
   def market_label
     MARKET_LABELS[market] || market.humanize

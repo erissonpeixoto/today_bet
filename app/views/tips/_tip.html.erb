@@ -14,8 +14,9 @@
     <span class="bg-[#0d2416] text-[#00c853] border border-[#1a5c2a] text-xs font-black px-3 py-1 uppercase tracking-wide">
       <%= tip.market_label %>
     </span>
-    <span class="bg-[#152030] text-gray-400 border border-[#243040] text-xs font-semibold px-3 py-1">
-      Confiança: <%= tip.confidence_label %>
+    <% reward = Tip::CONFIDENCE_WEIGHTS[tip.confidence]; penalty = Tip::CONFIDENCE_PENALTIES[tip.confidence] %>
+    <span class="bg-[#152030] text-gray-400 border border-[#243040] text-xs font-semibold px-3 py-1" title="Acerto: +#{reward}pts / Erro: #{penalty}pts">
+      <%= tip.confidence_label %> <span class="text-[#00c853]">+<%= reward %></span><% if penalty < 0 %><span class="text-red-400">/<%= penalty %></span><% end %>
     </span>
   </div>
 

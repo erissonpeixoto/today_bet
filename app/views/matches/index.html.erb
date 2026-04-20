@@ -44,12 +44,12 @@
       </div>
 
       <%# Legenda de pontuação em mobile %>
-      <div class="px-4 py-2 border-t border-[#243040] flex items-center justify-center gap-4 bg-[#141e2b]">
-        <span class="text-[10px] text-gray-500">🟡 Baixa = <span class="text-gray-300 font-bold">1pt</span></span>
+      <div class="px-4 py-2 border-t border-[#243040] flex items-center justify-center gap-3 bg-[#141e2b]">
+        <span class="text-[10px] text-gray-500">🟡 <span class="text-gray-300 font-bold">+1</span><span class="text-gray-600">/0</span></span>
         <span class="text-gray-700">·</span>
-        <span class="text-[10px] text-gray-500">🟠 Média = <span class="text-gray-300 font-bold">2pts</span></span>
+        <span class="text-[10px] text-gray-500">🟠 <span class="text-gray-300 font-bold">+2</span><span class="text-red-500 font-bold">/−1</span></span>
         <span class="text-gray-700">·</span>
-        <span class="text-[10px] text-gray-500">🔴 Alta = <span class="text-gray-300 font-bold">3pts</span></span>
+        <span class="text-[10px] text-gray-500">🔴 <span class="text-gray-300 font-bold">+3</span><span class="text-red-500 font-bold">/−2</span></span>
       </div>
     <% end %>
   </div>
@@ -149,13 +149,59 @@
         </div>
       <% end %>
     <% end %>
+
+    <%# ——— Palpite em chamas ——— %>
+    <% if @hottest_tip %>
+      <%= link_to match_path(@hottest_tip.match), class: "block mt-5 bg-gradient-to-r from-[#1f1500] to-[#1a2535] border border-[#f5c518]/30 hover:border-[#f5c518]/60 transition-all group" do %>
+        <div class="flex items-center gap-2 px-4 py-2.5 border-b border-[#f5c518]/20 bg-[#1a1000]">
+          <span class="text-sm">🔥</span>
+          <span class="text-xs font-black text-[#f5c518] uppercase tracking-wider">Palpite em chamas</span>
+          <span class="text-xs text-gray-500 ml-auto hidden sm:block">O palpite que mais agitou a comunidade</span>
+        </div>
+
+        <div class="px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
+          <div class="flex-1 min-w-0">
+            <p class="text-[10px] text-gray-500 uppercase tracking-wide mb-0.5">
+              <%= @hottest_tip.match.league %> · <%= @hottest_tip.match.formatted_date %>
+            </p>
+            <p class="text-sm font-black text-white group-hover:text-[#f5c518] transition-colors">
+              <%= @hottest_tip.match.title %>
+            </p>
+            <p class="text-xs text-gray-400 mt-1.5 line-clamp-1 italic">
+              "<%= @hottest_tip.justification %>"
+            </p>
+          </div>
+
+          <div class="flex sm:flex-col items-center sm:items-end gap-3 shrink-0">
+            <div class="flex gap-1.5">
+              <span class="bg-[#0d2416] border border-[#1a5c2a] text-[#00c853] text-[10px] font-black px-2 py-0.5 uppercase tracking-wide">
+                <%= @hottest_tip.market_label %>
+              </span>
+              <span class="bg-[#152030] border border-[#243040] text-gray-400 text-[10px] font-semibold px-2 py-0.5">
+                <%= @hottest_tip.confidence_label %>
+              </span>
+            </div>
+            <div class="flex items-center gap-2.5 text-xs font-bold">
+              <span class="text-blue-400">👍 <%= @hottest_tip.votes_agree_count %></span>
+              <span class="text-orange-400">🔥 <%= @hottest_tip.votes_hot_count %></span>
+              <span class="text-red-400">👎 <%= @hottest_tip.votes_disagree_count %></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-4 py-2 border-t border-[#f5c518]/10 flex items-center justify-between">
+          <span class="text-[10px] text-gray-500">por <%= @hottest_tip.user.display_name %></span>
+          <span class="text-[10px] font-bold text-[#f5c518] uppercase tracking-wide group-hover:underline">Ver palpite →</span>
+        </div>
+      <% end %>
+    <% end %>
   </div>
 
   <%# ——— Sidebar: visível apenas em desktop (lg+) ——— %>
-  <div class="hidden lg:block w-64 shrink-0">
+  <div class="hidden lg:block w-64 shrink-0 sticky top-20 self-start">
 
     <%# Card ranking %>
-    <div class="bg-[#1a2535] border border-[#243040] overflow-hidden sticky top-20">
+    <div class="bg-[#1a2535] border border-[#243040] overflow-hidden">
       <div class="px-4 py-3 bg-[#152030] border-b border-[#243040] flex items-center justify-between">
         <span class="text-xs font-black text-white uppercase tracking-wider">🏆 Top Apostadores</span>
         <%= link_to "Ver todos", ranking_path, class: "text-[10px] text-[#00c853] hover:underline font-bold uppercase" %>
@@ -205,20 +251,26 @@
 
     <%# Como funciona %>
     <div class="mt-3 bg-[#1a2535] border border-[#243040] px-4 py-4">
-      <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2.5">Como funciona?</p>
-      <div class="space-y-2">
-        <div class="flex items-center gap-2">
-          <span class="text-xs shrink-0">🟡</span>
-          <p class="text-[11px] text-gray-500">Baixa confiança = <span class="text-white font-bold">1 pt</span></p>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-xs shrink-0">🟠</span>
-          <p class="text-[11px] text-gray-500">Média confiança = <span class="text-white font-bold">2 pts</span></p>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-xs shrink-0">🔴</span>
-          <p class="text-[11px] text-gray-500">Alta confiança = <span class="text-white font-bold">3 pts</span></p>
-        </div>
+      <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-1">Como funciona?</p>
+      <p class="text-[10px] text-gray-600 mb-3">Acertar vale pontos. Errar custa.</p>
+      <div class="grid gap-y-2.5" style="grid-template-columns: auto 2rem 2.5rem 2rem 2.5rem">
+        <span class="text-[11px] text-gray-400">🟡 Baixa</span>
+        <span class="text-[11px] font-bold text-[#00c853] text-right">+1</span>
+        <span class="text-gray-600 text-[10px] text-center">acerto</span>
+        <span class="text-[11px] font-bold text-gray-500 text-right">0</span>
+        <span class="text-gray-600 text-[10px] text-center">erro</span>
+
+        <span class="text-[11px] text-gray-400">🟠 Média</span>
+        <span class="text-[11px] font-bold text-[#00c853] text-right">+2</span>
+        <span class="text-gray-600 text-[10px] text-center">acerto</span>
+        <span class="text-[11px] font-bold text-red-400 text-right">−1</span>
+        <span class="text-gray-600 text-[10px] text-center">erro</span>
+
+        <span class="text-[11px] text-gray-400">🔴 Alta</span>
+        <span class="text-[11px] font-bold text-[#00c853] text-right">+3</span>
+        <span class="text-gray-600 text-[10px] text-center">acerto</span>
+        <span class="text-[11px] font-bold text-red-400 text-right">−2</span>
+        <span class="text-gray-600 text-[10px] text-center">erro</span>
       </div>
     </div>
 

@@ -73,7 +73,7 @@
         <div>
           <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">Confiança</label>
           <%= f.select :confidence,
-            [["🟡 Baixa", "baixa"], ["🟠 Média", "media"], ["🔴 Alta", "alta"]],
+            [["🟡 Baixa  (+1 / erro 0)", "baixa"], ["🟠 Média  (+2 / erro −1)", "media"], ["🔴 Alta  (+3 / erro −2)", "alta"]],
             { include_blank: "Selecione..." },
             class: "w-full bg-[#0f1923] border border-[#2d3f50] text-white rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#00c853] focus:ring-1 focus:ring-[#00c853] transition-colors" %>
         </div>

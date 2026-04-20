@@ -1,8 +1,8 @@
 <% content_for :title, "Ranking - Bet do Dia" %>
 
 <div class="mb-6">
-  <h1 class="text-2xl font-black text-gray-900">Ranking de Apostadores 🏆</h1>
-  <p class="text-gray-500 text-sm mt-1">Pontuação ponderada pela confiança do palpite: Baixa = 1pt · Média = 2pts · Alta = 3pts</p>
+  <h1 class="text-2xl font-black text-white">Ranking de Apostadores 🏆</h1>
+  <p class="text-gray-500 text-sm mt-1">Acertar vale pontos — errar custa. Baixa: +1/0 · Média: +2/−1 · Alta: +3/−2</p>
 </div>
 
 <% ranked = @top_users.to_a %>
@@ -71,7 +71,7 @@
           <th class="px-4 py-3 font-semibold">Apostador</th>
           <th class="px-4 py-3 font-semibold text-center">Pontos</th>
           <th class="px-4 py-3 font-semibold text-center">Acertos</th>
-          <th class="px-4 py-3 font-semibold text-center hidden sm:table-cell">Palpites</th>
+          <th class="px-4 py-3 font-semibold text-center hidden sm:table-cell">Erros</th>
           <th class="px-4 py-3 font-semibold text-center hidden sm:table-cell">Taxa</th>
         </tr>
       </thead>
@@ -101,7 +101,9 @@
               <span class="font-black text-green-700"><%= user.ranking_score %></span>
             </td>
             <td class="px-4 py-3 text-center text-gray-700"><%= user.correct_tips_count %></td>
-            <td class="px-4 py-3 text-center text-gray-500 hidden sm:table-cell"><%= user.judged_tips_count %></td>
+            <td class="px-4 py-3 text-center hidden sm:table-cell">
+              <span class="<%= user.wrong_tips_count > 0 ? 'text-red-500' : 'text-gray-400' %>"><%= user.wrong_tips_count %></span>
+            </td>
             <td class="px-4 py-3 text-center hidden sm:table-cell">
               <% rate = user.accuracy_rate %>
               <span class="text-xs font-semibold px-2 py-0.5 rounded-full <%= rate >= 60 ? 'bg-green-100 text-green-700' : rate >= 40 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-600' %>">
