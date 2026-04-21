@@ -57,10 +57,10 @@ bundle exec brakeman                    # análise de segurança
 Dois layouts: `application` (site público) e `admin` (painel).
 
 ```
-/                          matches#index   (jogos do dia, paginado com Pagy)
+/                          home#index      (jogos do dia, paginado com Pagy)
 /matches/:id               matches#show    (palpites ordenados por 🔥)
 /matches/:id/tips          tips#create
-/matches/:id/tips/:id/votes votes#create  (toggle, responde Turbo Stream)
+/matches/:id/tips/:id/votes votes#create   (toggle, responde Turbo Stream)
 /admin/*                   Admin namespace, requer admin?
 /admin/football_clubs      CRUD de times
 /admin/matches             CRUD de partidas
