@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  root "matches#index"
+  root "home#index"
 
-  resources :matches, only: [:index, :show] do
+  resources :matches, only: [:show] do
     resources :tips, only: [:create] do
       resources :votes,    only: [:create]
       resources :comments, only: [:create]

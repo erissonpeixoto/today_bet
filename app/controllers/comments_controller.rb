@@ -3,7 +3,7 @@ class CommentsController < ApplicationController
   before_action :set_tip
 
   def create
-    @comment = @tip.comments.build(content: params[:comment][:content], user: current_user)
+    @comment = @tip.comments.build(content: params[:content], user: current_user)
 
     if @comment.save
       @tip.reload
