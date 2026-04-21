@@ -1,6 +1,6 @@
 module Admin
   class FootballClubsController < BaseController
-    before_action :set_club, only: [:edit, :update, :destroy]
+    before_action :set_club, only: [ :edit, :update, :destroy ]
 
     def index
       @clubs = FootballClub.order(:name)

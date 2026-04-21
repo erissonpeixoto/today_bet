@@ -1,6 +1,6 @@
 module Admin
   class MatchesController < BaseController
-    before_action :set_match, only: [:edit, :update, :destroy]
+    before_action :set_match, only: [ :edit, :update, :destroy ]
 
     def index
       @pagy, @matches = pagy(Match.order(match_date: :desc), items: 20)

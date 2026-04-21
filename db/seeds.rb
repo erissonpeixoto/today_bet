@@ -10,7 +10,7 @@ users = [
   { email: "joao@example.com",   username: "joao_bet",    password: "password123" },
   { email: "maria@example.com",  username: "maria_tips",  password: "password123" },
   { email: "carlos@example.com", username: "carlos_fc",   password: "password123" },
-  { email: "ana@example.com",    username: "ana_analyst", password: "password123" },
+  { email: "ana@example.com",    username: "ana_analyst", password: "password123" }
 ].map do |attrs|
   User.find_or_create_by!(email: attrs[:email]) do |u|
     u.username = attrs[:username]
@@ -79,7 +79,7 @@ clubs_data = [
   { name: "Rennes",            logo_url: "https://media.api-sports.io/football/teams/94.png" },
   { name: "Lens",              logo_url: "https://media.api-sports.io/football/teams/116.png" },
   { name: "Strasbourg",        logo_url: "https://media.api-sports.io/football/teams/95.png" },
-  { name: "Nantes",            logo_url: "https://media.api-sports.io/football/teams/83.png" },
+  { name: "Nantes",            logo_url: "https://media.api-sports.io/football/teams/83.png" }
 ]
 
 clubs = clubs_data.each_with_object({}) do |data, hash|
@@ -97,7 +97,7 @@ matches_data = [
   { home: "Manchester City", away: "Arsenal",     league: "Premier League",      hours_from_now: 6 },
   { home: "PSG",             away: "Lyon",        league: "Ligue 1",             hours_from_now: 8 },
   { home: "São Paulo",       away: "Corinthians", league: "Brasileirão Série A", hours_from_now: 24 },
-  { home: "Bayern",          away: "Dortmund",    league: "Bundesliga",          hours_from_now: 26 },
+  { home: "Bayern",          away: "Dortmund",    league: "Bundesliga",          hours_from_now: 26 }
 ]
 
 matches = matches_data.map do |data|
@@ -137,7 +137,7 @@ sample_tips = [
     match: matches[1], user: users[3],
     market: :ambos_marcam, confidence: :alta,
     justification: "Barcelona marca em todos os jogos em casa na temporada. Real Madrid nunca ficou sem marcar no Clásico nos últimos 3 anos. Cota excelente."
-  },
+  }
 ]
 
 sample_tips.each do |attrs|

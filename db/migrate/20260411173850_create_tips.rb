@@ -14,10 +14,10 @@ class CreateTips < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :tips, [:match_id, :votes_hot_count]
-    add_index :tips, [:match_id, :votes_agree_count]
-    add_index :tips, [:match_id, :comments_count]
-    add_index :tips, [:match_id, :confidence]
-    add_index :tips, [:user_id, :match_id, :market], unique: true
+    add_index :tips, [ :match_id, :votes_hot_count ]
+    add_index :tips, [ :match_id, :votes_agree_count ]
+    add_index :tips, [ :match_id, :comments_count ]
+    add_index :tips, [ :match_id, :confidence ]
+    add_index :tips, [ :user_id, :match_id, :market ], unique: true
   end
 end

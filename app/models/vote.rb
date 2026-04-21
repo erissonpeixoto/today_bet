@@ -4,7 +4,7 @@ class Vote < ApplicationRecord
 
   enum :vote_type, { concordo: 0, discordo: 1, quente: 2 }
 
-  validates :user_id, uniqueness: { scope: [:tip_id, :vote_type] }
+  validates :user_id, uniqueness: { scope: [ :tip_id, :vote_type ] }
 
   after_create  :increment_tip_counter
   after_destroy :decrement_tip_counter

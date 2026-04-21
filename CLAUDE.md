@@ -50,7 +50,7 @@ bundle exec brakeman                    # análise de segurança
 
 ### Tip Markets (enum inteiros — não reordenar sem migration)
 
-`vitoria_mandante(0)`, `vitoria_visitante(1)`, `empate(2)`, `ambos_marcam(3)`, `over_1_5(4)`, `under_1_5(5)`, `over_2_5(6)`, `under_2_5(7)`, `mais_escanteios_mandante(8)`, `mais_escanteios_visitante(9)`, `menos_escanteios_mandante(10)`, `menos_escanteios_visitante(11)`.
+`vitoria_mandante(0)`, `vitoria_visitante(1)`, `empate(2)`, `ambos_marcam(3)`, `over_1_5(4)`, `under_1_5(5)`, `over_2_5(6)`, `under_2_5(7)`, `mais_escanteios_mandante(8)`, `mais_escanteios_visitante(9)`.
 
 ### Layouts e Rotas
 

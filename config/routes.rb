@@ -3,10 +3,10 @@ Rails.application.routes.draw do
 
   root "home#index"
 
-  resources :matches, only: [:show] do
-    resources :tips, only: [:create] do
-      resources :votes,    only: [:create]
-      resources :comments, only: [:create]
+  resources :matches, only: [ :show ] do
+    resources :tips, only: [ :create ] do
+      resources :votes,    only: [ :create ]
+      resources :comments, only: [ :create ]
     end
   end
 
@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   namespace :admin do
     root "dashboard#index"
     resources :matches do
-      resources :tips, only: [:index] do
+      resources :tips, only: [ :index ] do
         collection do
           patch :set_result
         end

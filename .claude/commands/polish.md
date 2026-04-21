@@ -1,74 +1,29 @@
-# polish — linter + responsiveness check
+Execute the following steps in order after any code changes in this Rails project:
 
-After making any code changes, run this command to:
-1. Fix all auto-correctable linter issues
-2. Verify and fix frontend responsiveness for desktop and mobile
+**Step 1 — Auto-fix linter**
 
----
+Run `bundle exec rubocop -A` and fix any remaining offenses that could not be auto-corrected. Then run `bundle exec brakeman -q --no-pager` and fix any HIGH or MEDIUM severity warnings.
 
-## Step 1 — Linter (Ruby / ERB / JS)
+**Step 2 — Responsiveness audit**
 
-Run RuboCop with auto-correct on all changed files:
+Read every ERB view or partial changed in this conversation. For each file, check and fix:
+- `flex` rows that don't stack on mobile → use `flex-col sm:flex-row`
+- Fixed widths like `w-64` on containers → replace with `max-w-* w-full`
+- Grids without breakpoints → use `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
+- Large padding/margin without mobile ladder → use `p-3 md:p-6` pattern
+- Tables or wide containers without `overflow-x-auto`
+- Tap targets smaller than 44px on mobile (buttons, links)
+- Text that is too large on small screens → add responsive text size ladder
 
-```bash
-bundle exec rubocop -A
-```
+The project is mobile-first with Tailwind. Base classes target small screens; prefixes (`sm:`, `md:`, `lg:`) scale up.
 
-If RuboCop reports offenses it cannot auto-correct, fix them manually:
-- Extract long methods (> 10 lines) into private helpers
-- Replace `and`/`or` with `&&`/`||`
-- Remove trailing whitespace and enforce frozen string literals where applicable
-- Follow the project's existing naming conventions
+**Step 3 — Final linter check**
 
-Also run Brakeman to catch security issues introduced by the changes:
+Run `bundle exec rubocop` (no `-A`). It must exit with 0 offenses. If not, fix and repeat.
 
-```bash
-bundle exec brakeman -q --no-pager
-```
+**Step 4 — Report**
 
-Fix any HIGH or MEDIUM severity warnings before proceeding.
-
----
-
-## Step 2 — Frontend responsiveness review
-
-For every ERB view or partial touched in this session:
-
-1. **Audit Tailwind classes**: ensure every layout element uses responsive prefixes where needed (`sm:`, `md:`, `lg:`). The project targets mobile-first, so base classes are for small screens and prefixes scale up.
-
-2. **Check these patterns** in the changed views:
-   - Fixed widths (`w-64`, `w-96`) → replace with `max-w-*` + `w-full` unless intentional
-   - `flex` rows that should stack on mobile → add `flex-col sm:flex-row` (or `md:flex-row`)
-   - Text sizes that are too large on mobile → add `text-sm md:text-base` ladder
-   - Grids: use `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` pattern
-   - Padding/margin: use `p-3 md:p-6` ladder instead of large fixed values
-   - Overflow: add `overflow-x-auto` to tables and wide containers
-   - Navigation / modals: ensure they are usable at 375px (iPhone SE viewport)
-
-3. **Verify the dev server is running** (`bin/dev`) and open the changed pages in a browser using the screenshot tool or browser preview at:
-   - Desktop: 1280 × 800
-   - Mobile: 375 × 812 (iPhone SE / 13 mini)
-
-   Check that:
-   - No horizontal scroll appears on mobile
-   - Text is readable (≥ 14px rendered)
-   - Buttons and tap targets are ≥ 44 × 44 px on mobile
-   - Cards and lists stack properly on narrow viewports
-   - The dark theme (`#0f1923` bg, `#1a2535` cards) renders correctly on both
-
-4. **Fix any issues found** directly in the ERB/HTML, then re-run Step 1 to lint the changes.
-
----
-
-## Step 3 — Final check
-
-```bash
-bundle exec rubocop
-```
-
-Must exit with **0 offenses**. If it does not, fix remaining issues and repeat.
-
-Report a summary of:
-- Files changed by RuboCop auto-correct
-- Any manual fixes applied
+Print a short summary:
+- Files auto-corrected by RuboCop
+- Manual fixes applied
 - Responsive issues found and corrected

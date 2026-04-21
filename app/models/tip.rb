@@ -12,9 +12,7 @@ class Tip < ApplicationRecord
     over_2_5:                   6,
     under_2_5:                  7,
     mais_escanteios_mandante:   8,
-    mais_escanteios_visitante:  9,
-    menos_escanteios_mandante:  10,
-    menos_escanteios_visitante: 11
+    mais_escanteios_visitante:  9
   }
 
   enum :confidence, { baixa: 0, media: 1, alta: 2 }
@@ -25,7 +23,7 @@ class Tip < ApplicationRecord
   validates :justification, presence: true, length: { minimum: 20, maximum: 500 }
   validates :market, :confidence, presence: true
   validates :user_id, uniqueness: {
-    scope: [:match_id, :market],
+    scope: [ :match_id, :market ],
     message: "já postou um palpite para esse mercado nesse jogo"
   }
 
