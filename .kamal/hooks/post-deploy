@@ -1,4 +1,0 @@
-#!/bin/sh
-set -e
-echo "Running setup"
-kamal app exec --reuse "bin/rails db:drop db:create db:migrate db:seed"
