@@ -1,0 +1,78 @@
+<%# Page header %>
+<div class="flex items-center justify-between mb-8">
+  <div>
+    <h1 class="text-xl font-bold text-slate-900">🏆 Partidas Copa 2026</h1>
+    <p class="text-sm text-slate-400 mt-0.5">Gerencie as partidas e defina resultados</p>
+  </div>
+  <%= link_to new_admin_cup_match_path, class: "inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors shadow-sm" do %>
+    <span class="text-base leading-none">+</span> Nova Partida
+  <% end %>
+</div>
+
+<div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+  <% if @cup_matches.empty? %>
+    <div class="px-6 py-12 text-center text-slate-400">
+      <p class="text-4xl mb-3">📅</p>
+      <p class="font-semibold">Nenhuma partida cadastrada</p>
+      <p class="text-sm mt-1">Adicione os jogos da Copa do Mundo 2026</p>
+    </div>
+  <% else %>
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="bg-slate-50 border-b border-slate-200 text-left">
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Partida</th>
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Fase</th>
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Data</th>
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider">Status</th>
+          <th class="px-6 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wider text-center">Resultado</th>
+          <th class="px-6 py-3"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        <% @cup_matches.each do |match| %>
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="px-6 py-4 font-medium text-slate-800"><%= match.title %></td>
+            <td class="px-6 py-4 text-slate-500 text-xs">
+              <%= match.phase_label %>
+              <% if match.group_name.present? %>
+                <span class="text-slate-400"> · <%= match.group_name %></span>
+              <% end %>
+            </td>
+            <td class="px-6 py-4 text-slate-500 font-mono text-xs"><%= match.formatted_date %></td>
+            <td class="px-6 py-4">
+              <% if match.live? %>
+                <span class="inline-flex items-center gap-1 text-xs font-semibold bg-red-50 text-red-600 border border-red-100 px-2.5 py-1 rounded-full">
+                  <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span> Ao Vivo
+                </span>
+              <% elsif match.finished? %>
+                <span class="text-xs font-semibold bg-slate-100 text-slate-500 px-2.5 py-1 rounded-full">Encerrado</span>
+              <% else %>
+                <span class="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-1 rounded-full">Agendado</span>
+              <% end %>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <% if match.finished? %>
+                <span class="text-sm font-black text-slate-700 font-mono"><%= match.result_label %></span>
+              <% else %>
+                <span class="text-xs text-slate-300">—</span>
+              <% end %>
+            </td>
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3 justify-end">
+                <% unless match.finished? %>
+                  <%= link_to "Resultado", edit_admin_cup_match_path(match),
+                      class: "text-xs font-semibold text-emerald-600 hover:text-emerald-800 hover:underline transition-colors" %>
+                <% end %>
+                <%= link_to "Editar", edit_admin_cup_match_path(match),
+                    class: "text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline transition-colors" %>
+                <%= button_to "Excluir", admin_cup_match_path(match), method: :delete,
+                    data: { turbo_confirm: "Excluir esta partida e todos os palpites?" },
+                    class: "text-xs font-semibold text-red-400 hover:text-red-600 hover:underline transition-colors cursor-pointer bg-transparent" %>
+              </div>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

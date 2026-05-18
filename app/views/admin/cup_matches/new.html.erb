@@ -1,0 +1,21 @@
+<div class="flex items-center gap-3 mb-8">
+  <%= link_to admin_cup_matches_path, class: "text-xs text-slate-400 hover:text-slate-700 transition-colors" do %>
+    ← Partidas da Copa
+  <% end %>
+  <div>
+    <h1 class="text-xl font-bold text-slate-900">Nova Partida</h1>
+    <p class="text-sm text-slate-400 mt-0.5">Copa do Mundo 2026</p>
+  </div>
+</div>
+
+<div class="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+  <%= form_with model: @cup_match, url: admin_cup_matches_path do |f| %>
+    <%= render "form", f: f, cup_match: @cup_match %>
+    <div class="mt-6 flex gap-3">
+      <%= f.submit "Criar Partida",
+          class: "bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-5 py-2 rounded-lg transition-colors cursor-pointer" %>
+      <%= link_to "Cancelar", admin_cup_matches_path,
+          class: "text-sm text-slate-500 hover:text-slate-700 px-5 py-2 transition-colors" %>
+    </div>
+  <% end %>
+</div>

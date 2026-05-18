@@ -1,0 +1,61 @@
+<% clubs = FootballClub.order(:name) %>
+
+<% if cup_match.errors.any? %>
+  <div class="mb-5 bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-sm text-red-600">
+    <% cup_match.errors.full_messages.each do |msg| %>
+      <p>• <%= msg %></p>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="grid gap-5 sm:grid-cols-2">
+  <div>
+    <%= f.label :home_club_id, "Time Mandante", class: "block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" %>
+    <%= f.collection_select :home_club_id, clubs, :id, :name,
+        { prompt: "Selecione..." },
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+  </div>
+
+  <div>
+    <%= f.label :away_club_id, "Time Visitante", class: "block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" %>
+    <%= f.collection_select :away_club_id, clubs, :id, :name,
+        { prompt: "Selecione..." },
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+  </div>
+
+  <div>
+    <%= f.label :phase, "Fase", class: "block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" %>
+    <%= f.select :phase,
+        CupMatch.phases.keys.map { |k| [ CupMatch::PHASE_LABELS[k], k ] },
+        { prompt: "Selecione..." },
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+  </div>
+
+  <div>
+    <%= f.label :group_name, "Grupo (opcional)", class: "block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" %>
+    <%= f.text_field :group_name,
+        placeholder: "Ex: Grupo A",
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+  </div>
+
+  <div>
+    <%= f.label :match_date, "Data e Hora", class: "block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" %>
+    <%= f.datetime_local_field :match_date,
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+  </div>
+
+  <div>
+    <%= f.label :venue, "Local (opcional)", class: "block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" %>
+    <%= f.text_field :venue,
+        placeholder: "Ex: MetLife Stadium",
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+  </div>
+
+  <div>
+    <%= f.label :status, "Status", class: "block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5" %>
+    <%= f.select :status,
+        [ [ "Agendado", "scheduled" ], [ "Ao Vivo", "live" ], [ "Encerrado", "finished" ] ],
+        {},
+        class: "w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300" %>
+  </div>
+</div>

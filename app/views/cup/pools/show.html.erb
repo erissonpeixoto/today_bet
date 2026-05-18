@@ -1,0 +1,174 @@
+<% content_for :title, "#{@pool.name} - Bolão Copa 2026" %>
+
+<%# ——— Cabeçalho do bolão ——— %>
+<div class="mb-6">
+  <%= link_to cup_root_path, class: "text-xs text-gray-500 hover:text-white transition-colors" do %>
+    ← Meus Bolões
+  <% end %>
+
+  <div class="mt-3 bg-gradient-to-r from-[#006400] via-[#009c3b] to-[#006400] border border-[#ffdf00]/30 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+    <div class="flex-1 min-w-0">
+      <h1 class="text-xl font-black text-white uppercase tracking-wide truncate"><%= @pool.name %></h1>
+      <% if @pool.description.present? %>
+        <p class="text-sm text-green-200 mt-0.5"><%= @pool.description %></p>
+      <% end %>
+      <p class="text-xs text-green-300 mt-1">
+        👥 <%= @memberships.count %> participante<%= @memberships.count == 1 ? "" : "s" %>
+      </p>
+    </div>
+    <div class="shrink-0 text-center">
+      <p class="text-[10px] text-green-300 uppercase tracking-wider font-bold mb-1">Código de Convite</p>
+      <div class="bg-black/40 border border-[#ffdf00]/50 rounded-lg px-4 py-2">
+        <p class="text-2xl font-black text-[#ffdf00] font-mono tracking-widest"><%= @pool.invite_code %></p>
+      </div>
+      <p class="text-[9px] text-green-400 mt-1">Compartilhe com seus amigos</p>
+    </div>
+  </div>
+</div>
+
+<%# ——— Layout: ranking + palpites ——— %>
+<div class="flex flex-col lg:flex-row gap-6 items-start">
+
+  <%# Ranking do bolão %>
+  <div class="w-full lg:w-64 shrink-0">
+    <div class="bg-[#1a2535] border border-[#243040] rounded-xl overflow-hidden sticky top-20">
+      <div class="px-4 py-3 bg-[#152030] border-b border-[#243040] flex items-center justify-between">
+        <span class="text-xs font-black text-white uppercase tracking-wider">🏆 Ranking</span>
+        <%= link_to "Palpitar →", cup_pool_guesses_path(@pool),
+            class: "text-[10px] text-[#ffdf00] hover:underline font-bold" %>
+      </div>
+
+      <% if @memberships.empty? %>
+        <p class="text-xs text-gray-500 px-4 py-6 text-center">Nenhum participante ainda.</p>
+      <% else %>
+        <div class="divide-y divide-[#243040]">
+          <% @memberships.each_with_index do |m, idx| %>
+            <div class="flex items-center gap-3 px-4 py-3 <%= m.user == current_user ? 'bg-[#0d2416]' : '' %>">
+              <div class="shrink-0 w-5 text-center">
+                <%= idx == 0 ? "🥇" : idx == 1 ? "🥈" : idx == 2 ? "🥉" : "#{idx + 1}" %>
+              </div>
+              <div class="w-8 h-8 rounded-full bg-[#243040] flex items-center justify-center text-xs font-black text-[#009c3b] shrink-0">
+                <%= m.user.username[0].upcase %>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-bold text-white truncate"><%= m.user.display_name %></p>
+                <p class="text-[10px] text-gray-500 capitalize"><%= m.role == "owner" ? "👑 Criador" : "Membro" %></p>
+              </div>
+              <div class="text-right shrink-0">
+                <p class="text-sm font-black text-[#009c3b]"><%= m.total_score %></p>
+                <p class="text-[10px] text-gray-500">pts</p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Partidas e palpites ——— %>
+  <div class="w-full flex-1 min-w-0">
+    <div class="bg-[#1a2535] border border-[#243040] rounded-xl overflow-hidden mb-4">
+      <div class="px-4 py-3 bg-[#152030] border-b border-[#243040] flex items-center justify-between gap-3">
+        <span class="text-xs font-black text-white uppercase tracking-wider">⚽ Partidas da Copa</span>
+        <%= link_to cup_pool_guesses_path(@pool),
+            class: "shrink-0 text-xs font-bold bg-[#ffdf00] hover:bg-yellow-400 text-black px-4 py-1.5 rounded-lg transition-colors" do %>
+          ✏️ Fazer Palpites
+        <% end %>
+      </div>
+    </div>
+
+    <% if @matches.empty? %>
+      <div class="bg-[#1a2535] border border-[#243040] rounded-xl p-10 text-center">
+        <p class="text-4xl mb-3">📅</p>
+        <p class="text-white font-bold">Nenhuma partida cadastrada ainda</p>
+        <p class="text-gray-500 text-xs mt-1">Os jogos da Copa 2026 serão adicionados em breve</p>
+      </div>
+    <% else %>
+      <%# Agrupa partidas por fase %>
+      <% @matches.group_by(&:phase_label).each do |phase_label, matches| %>
+        <div class="mb-5">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest"><%= phase_label %></span>
+            <div class="flex-1 h-px bg-[#243040]"></div>
+          </div>
+
+          <div class="grid gap-2 lg:grid-cols-2">
+            <% matches.each do |match| %>
+              <% guess = @user_guesses[match.id] %>
+              <div class="bg-[#1a2535] border <%= match.finished? ? 'border-[#243040]' : 'border-[#243040] hover:border-[#009c3b]/30' %> rounded-xl overflow-hidden transition-all">
+
+                <%# Header da partida %>
+                <div class="flex items-center justify-between px-3 py-2 bg-[#152030] border-b border-[#243040]">
+                  <span class="text-[10px] text-gray-500 font-mono"><%= match.formatted_date %></span>
+                  <% if match.finished? %>
+                    <span class="text-[10px] font-black text-[#ffdf00]">
+                      <%= match.result_label %>
+                    </span>
+                  <% elsif match.live? %>
+                    <span class="flex items-center gap-1 text-[10px] font-black text-red-400">
+                      <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse inline-block"></span>
+                      Ao Vivo
+                    </span>
+                  <% else %>
+                    <span class="text-[10px] text-[#009c3b] font-bold">Aberto</span>
+                  <% end %>
+                </div>
+
+                <%# Times %>
+                <div class="flex items-center justify-between px-3 py-3 gap-2">
+                  <div class="flex-1 text-center">
+                    <% if match.home_club&.logo_url.present? %>
+                      <img src="<%= match.home_club.logo_url %>" alt="<%= match.home_team %>"
+                           class="w-8 h-8 object-contain mx-auto mb-1" onerror="this.style.display='none'">
+                    <% end %>
+                    <p class="text-xs font-black text-white leading-tight"><%= match.home_team %></p>
+                  </div>
+                  <div class="shrink-0 text-center px-2">
+                    <span class="text-xs font-black text-gray-600">×</span>
+                  </div>
+                  <div class="flex-1 text-center">
+                    <% if match.away_club&.logo_url.present? %>
+                      <img src="<%= match.away_club.logo_url %>" alt="<%= match.away_team %>"
+                           class="w-8 h-8 object-contain mx-auto mb-1" onerror="this.style.display='none'">
+                    <% end %>
+                    <p class="text-xs font-black text-white leading-tight"><%= match.away_team %></p>
+                  </div>
+                </div>
+
+                <%# Palpite do usuário %>
+                <div class="px-3 pb-3">
+                  <% if guess %>
+                    <div class="flex items-center justify-center gap-2 bg-[#0f1923] border border-[#243040] rounded-lg py-1.5 px-3">
+                      <span class="text-[10px] text-gray-500">Seu palpite:</span>
+                      <span class="text-sm font-black text-white font-mono">
+                        <%= guess.home_score_guess %> × <%= guess.away_score_guess %>
+                      </span>
+                      <% if match.finished? %>
+                        <% if guess.points_earned == 3 %>
+                          <span class="text-[10px] font-black text-[#ffdf00]">🎯 +3</span>
+                        <% elsif guess.points_earned == 1 %>
+                          <span class="text-[10px] font-black text-[#009c3b]">✓ +1</span>
+                        <% else %>
+                          <span class="text-[10px] font-black text-gray-600">✗ 0</span>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  <% elsif match.open? %>
+                    <%= link_to cup_pool_guesses_path(@pool),
+                        class: "block text-center text-[10px] font-bold text-[#ffdf00] bg-[#1a1000] border border-[#ffdf00]/20 rounded-lg py-1.5 hover:border-[#ffdf00]/50 transition-colors" do %>
+                      + Fazer palpite
+                    <% end %>
+                  <% else %>
+                    <p class="text-center text-[10px] text-gray-600">Sem palpite</p>
+                  <% end %>
+                </div>
+
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+</div>

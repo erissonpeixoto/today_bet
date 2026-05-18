@@ -1,0 +1,37 @@
+<% content_for :title, "Entrar no Bolão - #{@pool.name}" %>
+
+<div class="max-w-md mx-auto mt-8">
+  <div class="bg-gradient-to-b from-[#006400] to-[#1a2535] border border-[#009c3b]/40 rounded-xl overflow-hidden text-center">
+    <div class="p-8">
+      <p class="text-5xl mb-3">🏆</p>
+      <h1 class="text-xl font-black text-white uppercase tracking-wide">Você foi convidado!</h1>
+      <p class="text-green-200 text-sm mt-2">Entrar no bolão:</p>
+      <p class="text-2xl font-black text-[#ffdf00] mt-1"><%= @pool.name %></p>
+      <% if @pool.description.present? %>
+        <p class="text-green-300 text-xs mt-2 italic"><%= @pool.description %></p>
+      <% end %>
+      <p class="text-green-300 text-xs mt-3">
+        👥 <%= @pool.cup_pool_memberships.count %> participante<%= @pool.cup_pool_memberships.count == 1 ? "" : "s" %> já estão neste bolão
+      </p>
+    </div>
+
+    <div class="bg-black/30 px-8 py-6 space-y-3">
+      <%= form_with url: cup_join_path(code: params[:code]), method: :post do |f| %>
+        <%= f.submit "Entrar no Bolão 🎉",
+            class: "w-full bg-[#ffdf00] hover:bg-yellow-400 text-black font-black text-sm py-3 rounded-lg transition-colors cursor-pointer" %>
+      <% end %>
+      <%= link_to cup_root_path, class: "block text-center text-xs text-gray-400 hover:text-white transition-colors mt-2" do %>
+        Não, obrigado
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mt-4 bg-[#1a2535] border border-[#243040] rounded-xl p-4">
+    <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Como funciona</p>
+    <div class="space-y-1.5 text-xs text-gray-500">
+      <p>🎯 Acerte o placar exato e ganhe <strong class="text-[#ffdf00]">3 pontos</strong></p>
+      <p>✅ Acerte só o resultado e ganhe <strong class="text-[#009c3b]">1 ponto</strong></p>
+      <p>🔒 Palpites são bloqueados quando a partida começa</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,140 @@
+<% content_for :title, "Palpites - #{@pool.name}" %>
+
+<div class="mb-5">
+  <%= link_to cup_pool_path(@pool), class: "text-xs text-gray-500 hover:text-white transition-colors" do %>
+    ← Voltar ao bolão
+  <% end %>
+  <div class="mt-2 flex items-center justify-between gap-3">
+    <div>
+      <h1 class="text-xl font-black text-white uppercase tracking-wide">Seus Palpites</h1>
+      <p class="text-xs text-gray-500 mt-0.5"><%= @pool.name %></p>
+    </div>
+    <span class="text-[10px] font-bold text-[#009c3b] bg-[#0d2416] border border-[#1a5c2a] px-3 py-1 rounded-full uppercase tracking-wide">
+      🔑 <%= @pool.invite_code %>
+    </span>
+  </div>
+</div>
+
+<%# Legenda %>
+<div class="mb-5 flex flex-wrap gap-2 text-[10px] font-bold">
+  <span class="bg-[#1a1000] border border-[#ffdf00]/30 text-[#ffdf00] px-3 py-1 rounded-full">🎯 Placar exato = 3 pts</span>
+  <span class="bg-[#0d2416] border border-[#1a5c2a] text-[#009c3b] px-3 py-1 rounded-full">✓ Resultado certo = 1 pt</span>
+  <span class="bg-[#1a2535] border border-[#243040] text-gray-500 px-3 py-1 rounded-full">🔒 Bloqueado quando a partida começa</span>
+</div>
+
+<% if @matches.empty? %>
+  <div class="bg-[#1a2535] border border-[#243040] rounded-xl p-12 text-center">
+    <p class="text-4xl mb-3">📅</p>
+    <p class="text-white font-bold">Nenhuma partida cadastrada ainda</p>
+  </div>
+<% else %>
+  <% @matches.group_by(&:phase_label).each do |phase_label, matches| %>
+    <div class="mb-8">
+      <div class="flex items-center gap-2 mb-3">
+        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest"><%= phase_label %></span>
+        <div class="flex-1 h-px bg-[#243040]"></div>
+      </div>
+
+      <div class="grid gap-3 sm:grid-cols-2">
+        <% matches.each do |match| %>
+          <% guess = @user_guesses[match.id] %>
+          <div class="bg-[#1a2535] border <%= match.open? ? 'border-[#243040] hover:border-[#009c3b]/40' : 'border-[#243040] opacity-75' %> rounded-xl overflow-hidden transition-all">
+
+            <%# Header %>
+            <div class="flex items-center justify-between px-4 py-2.5 bg-[#152030] border-b border-[#243040]">
+              <span class="text-[10px] text-gray-500 font-mono"><%= match.formatted_date %></span>
+              <% if match.finished? %>
+                <span class="flex items-center gap-1.5 text-[10px] font-black text-[#ffdf00]">
+                  Resultado: <%= match.result_label %>
+                </span>
+              <% elsif match.live? %>
+                <span class="flex items-center gap-1 text-[10px] font-black text-red-400">
+                  <span class="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span> Ao Vivo
+                </span>
+              <% else %>
+                <span class="text-[10px] font-bold text-[#009c3b]">✓ Aberto</span>
+              <% end %>
+            </div>
+
+            <%# Times + Placar %>
+            <div class="px-4 py-4">
+              <div class="flex items-center gap-3">
+                <%# Time da casa %>
+                <div class="flex-1 text-center">
+                  <% if match.home_club&.logo_url.present? %>
+                    <img src="<%= match.home_club.logo_url %>" alt="<%= match.home_team %>"
+                         class="w-10 h-10 object-contain mx-auto mb-1.5" onerror="this.style.display='none'">
+                  <% end %>
+                  <p class="text-xs font-black text-white leading-tight"><%= match.home_team %></p>
+                </div>
+
+                <%# Inputs do palpite %>
+                <div class="shrink-0">
+                  <% if match.open? && !guess&.locked? %>
+                    <%= form_with url: cup_pool_guesses_path(@pool), method: :post, class: "flex items-center gap-1" do |f| %>
+                      <input type="hidden" name="cup_guess[cup_match_id]" value="<%= match.id %>">
+                      <input type="number"
+                             name="cup_guess[home_score_guess]"
+                             value="<%= guess&.home_score_guess %>"
+                             min="0" max="20"
+                             placeholder="0"
+                             class="w-10 bg-[#0f1923] border border-[#243040] text-white text-sm font-black text-center py-1.5 rounded focus:outline-none focus:border-[#009c3b] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                             required>
+                      <span class="text-gray-500 font-black text-xs">×</span>
+                      <input type="number"
+                             name="cup_guess[away_score_guess]"
+                             value="<%= guess&.away_score_guess %>"
+                             min="0" max="20"
+                             placeholder="0"
+                             class="w-10 bg-[#0f1923] border border-[#243040] text-white text-sm font-black text-center py-1.5 rounded focus:outline-none focus:border-[#009c3b] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                             required>
+                      <button type="submit"
+                              class="bg-[#009c3b] hover:bg-[#007a2e] text-white text-[10px] font-black px-2 py-1.5 rounded transition-colors cursor-pointer ml-1">
+                        <%= guess ? "✓" : "+" %>
+                      </button>
+                    <% end %>
+                  <% elsif guess %>
+                    <div class="flex items-center gap-1 px-2">
+                      <span class="text-lg font-black text-white font-mono"><%= guess.home_score_guess %></span>
+                      <span class="text-gray-500 font-black text-xs">×</span>
+                      <span class="text-lg font-black text-white font-mono"><%= guess.away_score_guess %></span>
+                      <% if match.finished? %>
+                        <% if guess.points_earned == 3 %>
+                          <span class="ml-1 text-[10px] font-black text-[#ffdf00] bg-[#1a1000] border border-[#ffdf00]/30 px-1.5 py-0.5 rounded">+3</span>
+                        <% elsif guess.points_earned == 1 %>
+                          <span class="ml-1 text-[10px] font-black text-[#009c3b] bg-[#0d2416] border border-[#1a5c2a] px-1.5 py-0.5 rounded">+1</span>
+                        <% else %>
+                          <span class="ml-1 text-[10px] font-black text-gray-500 bg-[#1a2535] border border-[#243040] px-1.5 py-0.5 rounded">0</span>
+                        <% end %>
+                      <% else %>
+                        <span class="ml-1 text-[10px] text-gray-600">🔒</span>
+                      <% end %>
+                    </div>
+                  <% else %>
+                    <div class="px-2 text-center">
+                      <span class="text-[10px] text-gray-600">🔒 Fechado</span>
+                    </div>
+                  <% end %>
+                </div>
+
+                <%# Time visitante %>
+                <div class="flex-1 text-center">
+                  <% if match.away_club&.logo_url.present? %>
+                    <img src="<%= match.away_club.logo_url %>" alt="<%= match.away_team %>"
+                         class="w-10 h-10 object-contain mx-auto mb-1.5" onerror="this.style.display='none'">
+                  <% end %>
+                  <p class="text-xs font-black text-white leading-tight"><%= match.away_team %></p>
+                </div>
+              </div>
+
+              <% if match.group_name.present? %>
+                <p class="text-center text-[9px] text-gray-600 mt-2 uppercase tracking-wide"><%= match.group_name %></p>
+              <% end %>
+            </div>
+
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+<% end %>

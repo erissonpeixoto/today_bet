@@ -55,6 +55,29 @@
   </div>
 </div>
 
+<%# ——— Banner Bolão da Copa 2026 ——— %>
+<%= link_to cup_root_path, class: "block mb-5 group" do %>
+  <div class="relative overflow-hidden rounded-xl border-2 border-[#ffdf00]/50 bg-gradient-to-r from-[#003d00] via-[#009c3b] to-[#003d00] hover:border-[#ffdf00]/80 transition-all">
+    <div class="absolute inset-0 opacity-10" style="background-image:repeating-linear-gradient(45deg,#ffdf00 0,#ffdf00 1px,transparent 0,transparent 50%);background-size:10px 10px;"></div>
+    <div class="relative flex items-center justify-between px-5 py-4 gap-4">
+      <div class="flex items-center gap-3">
+        <span class="text-3xl">🏆</span>
+        <div>
+          <p class="text-xs font-black text-[#ffdf00] uppercase tracking-widest">Novo!</p>
+          <p class="text-lg font-black text-white uppercase tracking-wide leading-tight">Bolão Copa 2026</p>
+          <p class="text-xs text-green-200 mt-0.5">Dispute com amigos · Placar exato = 3 pts</p>
+        </div>
+      </div>
+      <div class="shrink-0 flex flex-col items-center gap-1">
+        <span class="bg-[#ffdf00] text-black text-xs font-black px-4 py-1.5 rounded-full group-hover:bg-yellow-300 transition-colors whitespace-nowrap">
+          Jogar agora →
+        </span>
+        <span class="text-[9px] text-green-300 font-bold uppercase tracking-wide">🇧🇷 EUA · MEX · CAN</span>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <%# ——— Cabeçalho full-width ——— %>
 <div class="mb-5 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
   <div>

@@ -1,0 +1,60 @@
+<% content_for :title, "Criar Bolão - Copa 2026" %>
+
+<div class="max-w-lg mx-auto">
+  <div class="mb-6">
+    <%= link_to cup_root_path, class: "text-xs text-gray-500 hover:text-white transition-colors" do %>
+      ← Voltar aos bolões
+    <% end %>
+    <h1 class="text-xl font-black text-white mt-2 uppercase tracking-wide">🏆 Criar Bolão</h1>
+    <p class="text-gray-500 text-xs mt-0.5">Configure seu bolão e convide os amigos</p>
+  </div>
+
+  <div class="bg-[#1a2535] border border-[#243040] rounded-xl overflow-hidden">
+    <%= form_with model: @pool, url: cup_pools_path, class: "p-6 space-y-5" do |f| %>
+
+      <% if @pool.errors.any? %>
+        <div class="bg-[#2a0d0d] border border-[#5c1a1a] text-red-400 px-4 py-3 rounded text-sm">
+          <% @pool.errors.full_messages.each do |msg| %>
+            <p>• <%= msg %></p>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div>
+        <%= f.label :name, "Nome do Bolão", class: "block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5" %>
+        <%= f.text_field :name,
+            placeholder: "Ex: Bolão dos Colegas",
+            maxlength: 50,
+            class: "w-full bg-[#0f1923] border border-[#243040] text-white text-sm px-3 py-2.5 rounded-lg focus:outline-none focus:border-[#009c3b] placeholder-gray-600" %>
+      </div>
+
+      <div>
+        <%= f.label :description, "Descrição (opcional)", class: "block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1.5" %>
+        <%= f.text_area :description,
+            placeholder: "Uma descrição curta para o bolão...",
+            rows: 3,
+            maxlength: 200,
+            class: "w-full bg-[#0f1923] border border-[#243040] text-white text-sm px-3 py-2.5 rounded-lg focus:outline-none focus:border-[#009c3b] placeholder-gray-600 resize-none" %>
+      </div>
+
+      <div class="flex items-center gap-3 p-3 bg-[#0f1923] border border-[#243040] rounded-lg">
+        <%= f.check_box :private, class: "w-4 h-4 accent-[#009c3b]" %>
+        <div>
+          <%= f.label :private, "Bolão privado", class: "text-sm font-bold text-white cursor-pointer" %>
+          <p class="text-[10px] text-gray-500">Apenas quem tiver o código pode entrar</p>
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <%= f.submit "Criar Bolão 🏆",
+            class: "w-full bg-[#009c3b] hover:bg-[#007a2e] text-white font-black text-sm py-3 rounded-lg transition-colors cursor-pointer" %>
+      </div>
+
+    <% end %>
+  </div>
+
+  <div class="mt-4 bg-[#1a1000] border border-[#ffdf00]/20 rounded-xl p-4">
+    <p class="text-[10px] font-black text-[#ffdf00] uppercase tracking-wider mb-1">📋 Próximos passos</p>
+    <p class="text-xs text-gray-400">Após criar o bolão, você receberá um <strong class="text-white">código de 6 letras</strong> para compartilhar com seus amigos.</p>
+  </div>
+</div>

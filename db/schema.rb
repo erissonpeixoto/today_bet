@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_18_191648) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_28_000004) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,6 +22,66 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_191648) do
     t.bigint "user_id", null: false
     t.index ["tip_id"], name: "index_comments_on_tip_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+  end
+
+  create_table "cup_guesses", force: :cascade do |t|
+    t.integer "away_score_guess", null: false
+    t.datetime "created_at", null: false
+    t.bigint "cup_match_id", null: false
+    t.bigint "cup_pool_id", null: false
+    t.integer "home_score_guess", null: false
+    t.boolean "locked", default: false, null: false
+    t.integer "points_earned", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["cup_match_id"], name: "index_cup_guesses_on_cup_match_id"
+    t.index ["cup_pool_id", "cup_match_id", "user_id"], name: "index_cup_guesses_on_cup_pool_id_and_cup_match_id_and_user_id", unique: true
+    t.index ["cup_pool_id"], name: "index_cup_guesses_on_cup_pool_id"
+    t.index ["user_id"], name: "index_cup_guesses_on_user_id"
+  end
+
+  create_table "cup_matches", force: :cascade do |t|
+    t.bigint "away_club_id", null: false
+    t.integer "away_score"
+    t.datetime "created_at", null: false
+    t.string "group_name"
+    t.bigint "home_club_id", null: false
+    t.integer "home_score"
+    t.datetime "match_date", null: false
+    t.integer "phase", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.string "venue"
+    t.index ["away_club_id"], name: "index_cup_matches_on_away_club_id"
+    t.index ["home_club_id"], name: "index_cup_matches_on_home_club_id"
+    t.index ["match_date"], name: "index_cup_matches_on_match_date"
+    t.index ["phase"], name: "index_cup_matches_on_phase"
+    t.index ["status"], name: "index_cup_matches_on_status"
+  end
+
+  create_table "cup_pool_memberships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "cup_pool_id", null: false
+    t.integer "role", default: 0, null: false
+    t.integer "total_score", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["cup_pool_id", "user_id"], name: "index_cup_pool_memberships_on_cup_pool_id_and_user_id", unique: true
+    t.index ["cup_pool_id"], name: "index_cup_pool_memberships_on_cup_pool_id"
+    t.index ["user_id"], name: "index_cup_pool_memberships_on_user_id"
+  end
+
+  create_table "cup_pools", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "creator_id", null: false
+    t.text "description"
+    t.string "invite_code", null: false
+    t.string "name", null: false
+    t.boolean "private", default: false, null: false
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_cup_pools_on_creator_id"
+    t.index ["invite_code"], name: "index_cup_pools_on_invite_code", unique: true
   end
 
   create_table "football_clubs", force: :cascade do |t|
@@ -96,6 +156,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_18_191648) do
 
   add_foreign_key "comments", "tips"
   add_foreign_key "comments", "users"
+  add_foreign_key "cup_guesses", "cup_matches"
+  add_foreign_key "cup_guesses", "cup_pools"
+  add_foreign_key "cup_guesses", "users"
+  add_foreign_key "cup_matches", "football_clubs", column: "away_club_id"
+  add_foreign_key "cup_matches", "football_clubs", column: "home_club_id"
+  add_foreign_key "cup_pool_memberships", "cup_pools"
+  add_foreign_key "cup_pool_memberships", "users"
+  add_foreign_key "cup_pools", "users", column: "creator_id"
   add_foreign_key "matches", "football_clubs", column: "away_club_id"
   add_foreign_key "matches", "football_clubs", column: "home_club_id"
   add_foreign_key "tips", "matches"
