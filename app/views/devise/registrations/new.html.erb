@@ -10,6 +10,11 @@
 
       <div class="space-y-4">
         <div>
+          <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">Username</label>
+          <%= f.text_field :username, autocomplete: "username", class: "w-full bg-[#0f1923] border border-[#2d3f50] text-white rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#00c853] focus:ring-1 focus:ring-[#00c853] transition-colors" %>
+        </div>
+
+        <div>
           <label class="block text-xs font-bold text-gray-400 uppercase tracking-wide mb-1.5">E-mail</label>
           <%= f.email_field :email, autofocus: true, autocomplete: "email",
             class: "w-full bg-[#0f1923] border border-[#2d3f50] text-white rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#00c853] focus:ring-1 focus:ring-[#00c853] transition-colors" %>
