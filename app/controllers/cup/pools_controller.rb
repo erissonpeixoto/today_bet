@@ -1,12 +1,19 @@
 module Cup
   class PoolsController < BaseController
+    skip_before_action :authenticate_user!, only: [ :index ]
     before_action :set_pool, only: [ :show ]
 
     def index
-      @pools = current_user.cup_pool_memberships
-                           .includes(:cup_pool)
-                           .order(created_at: :desc)
-                           .map(&:cup_pool)
+      @public_pools = CupPool.where(private: false)
+                             .includes(:cup_pool_memberships)
+                             .order(created_at: :desc)
+                             .limit(10)
+      if user_signed_in?
+        @pools = current_user.cup_pool_memberships
+                             .includes(:cup_pool)
+                             .order(created_at: :desc)
+                             .map(&:cup_pool)
+      end
     end
 
     def show

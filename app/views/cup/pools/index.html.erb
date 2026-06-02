@@ -14,129 +14,236 @@
   </div>
 </div>
 
-<%# ——— Grid: meus bolões + ações ——— %>
-<div class="flex flex-col lg:flex-row gap-6 items-start">
+<% if user_signed_in? %>
 
-  <%# Coluna principal: bolões %>
-  <div class="w-full flex-1 min-w-0">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-sm font-black text-white uppercase tracking-wider">Meus Bolões</h2>
-    </div>
+  <%# ——— Usuário logado: meus bolões + ações ——— %>
+  <div class="flex flex-col lg:flex-row gap-6 items-start">
 
-    <% if @pools.empty? %>
-      <div class="bg-[#1a2535] border border-[#243040] rounded-xl p-10 text-center">
-        <p class="text-4xl mb-3">🎯</p>
-        <p class="text-white font-bold mb-1">Você ainda não está em nenhum bolão</p>
-        <p class="text-gray-500 text-xs mb-5">Crie o seu ou entre com um código de convite</p>
-        <%= link_to new_cup_pool_path, class: "inline-block bg-[#009c3b] hover:bg-[#007a2e] text-white text-sm font-black px-6 py-2.5 rounded-lg transition-colors" do %>
-          🏆 Criar Bolão
-        <% end %>
+    <%# Coluna principal: bolões %>
+    <div class="w-full flex-1 min-w-0">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-sm font-black text-white uppercase tracking-wider">Meus Bolões</h2>
       </div>
-    <% else %>
-      <div class="grid gap-3">
-        <% @pools.each do |pool| %>
-          <%= link_to cup_pool_path(pool), class: "block bg-[#1a2535] hover:bg-[#1f2d40] border border-[#243040] hover:border-[#009c3b]/40 rounded-xl p-4 transition-all group" do %>
-            <div class="flex items-start justify-between gap-3">
-              <div class="flex-1 min-w-0">
-                <p class="font-black text-white group-hover:text-[#009c3b] transition-colors truncate"><%= pool.name %></p>
-                <% if pool.description.present? %>
-                  <p class="text-xs text-gray-500 mt-0.5 line-clamp-1"><%= pool.description %></p>
-                <% end %>
-                <div class="flex items-center gap-3 mt-2">
-                  <span class="text-[10px] text-gray-500">
-                    👥 <%= pool.cup_pool_memberships.count %> participante<%= pool.cup_pool_memberships.count == 1 ? "" : "s" %>
-                  </span>
-                  <span class="text-[10px] font-mono text-[#ffdf00] bg-black/30 px-2 py-0.5 rounded">
-                    🔑 <%= pool.invite_code %>
-                  </span>
+
+      <% if @pools.empty? %>
+        <div class="bg-[#1a2535] border border-[#243040] rounded-xl p-10 text-center">
+          <p class="text-4xl mb-3">🎯</p>
+          <p class="text-white font-bold mb-1">Você ainda não está em nenhum bolão</p>
+          <p class="text-gray-500 text-xs mb-5">Crie o seu ou entre com um código de convite</p>
+          <%= link_to new_cup_pool_path, class: "inline-block bg-[#009c3b] hover:bg-[#007a2e] text-white text-sm font-black px-6 py-2.5 rounded-lg transition-colors" do %>
+            🏆 Criar Bolão
+          <% end %>
+        </div>
+      <% else %>
+        <div class="grid gap-3">
+          <% @pools.each do |pool| %>
+            <%= link_to cup_pool_path(pool), class: "block bg-[#1a2535] hover:bg-[#1f2d40] border border-[#243040] hover:border-[#009c3b]/40 rounded-xl p-4 transition-all group" do %>
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                  <p class="font-black text-white group-hover:text-[#009c3b] transition-colors truncate"><%= pool.name %></p>
+                  <% if pool.description.present? %>
+                    <p class="text-xs text-gray-500 mt-0.5 line-clamp-1"><%= pool.description %></p>
+                  <% end %>
+                  <div class="flex items-center gap-3 mt-2">
+                    <span class="text-[10px] text-gray-500">
+                      👥 <%= pool.cup_pool_memberships.count %> participante<%= pool.cup_pool_memberships.count == 1 ? "" : "s" %>
+                    </span>
+                    <span class="text-[10px] font-mono text-[#ffdf00] bg-black/30 px-2 py-0.5 rounded">
+                      🔑 <%= pool.invite_code %>
+                    </span>
+                  </div>
+                </div>
+                <div class="text-right shrink-0">
+                  <% membership = pool.membership_for(current_user) %>
+                  <% if membership %>
+                    <p class="text-xl font-black text-[#009c3b]"><%= membership.total_score %></p>
+                    <p class="text-[10px] text-gray-500">pontos</p>
+                  <% end %>
                 </div>
               </div>
-              <div class="text-right shrink-0">
-                <% membership = pool.membership_for(current_user) %>
-                <% if membership %>
-                  <p class="text-xl font-black text-[#009c3b]"><%= membership.total_score %></p>
-                  <p class="text-[10px] text-gray-500">pontos</p>
-                <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Coluna lateral: ações ——— %>
+    <div class="w-full lg:w-72 shrink-0 space-y-4">
+
+      <%# Criar bolão %>
+      <div class="bg-[#1a2535] border border-[#243040] rounded-xl overflow-hidden">
+        <div class="px-4 py-3 bg-[#152030] border-b border-[#243040]">
+          <p class="text-xs font-black text-white uppercase tracking-wider">🏆 Criar Bolão</p>
+        </div>
+        <div class="p-4">
+          <%= link_to new_cup_pool_path, class: "block w-full text-center bg-[#009c3b] hover:bg-[#007a2e] text-white font-black text-sm py-2.5 rounded-lg transition-colors" do %>
+            + Novo Bolão
+          <% end %>
+        </div>
+      </div>
+
+      <%# Entrar com código %>
+      <div class="bg-[#1a2535] border border-[#243040] rounded-xl overflow-hidden">
+        <div class="px-4 py-3 bg-[#152030] border-b border-[#243040]">
+          <p class="text-xs font-black text-white uppercase tracking-wider">🔑 Entrar com Código</p>
+        </div>
+        <div class="p-4">
+          <%= form_with url: "#", method: :get do |f| %>
+            <div class="flex gap-2">
+              <%= f.text_field :code,
+                  placeholder: "Ex: AB1C2D",
+                  minlength: 6,
+                  maxlength: 6,
+                  required: true,
+                  class: "flex-1 bg-[#0f1923] border border-[#243040] text-white text-sm font-mono px-3 py-2 rounded-lg focus:outline-none focus:border-[#009c3b] placeholder-gray-600 uppercase",
+                  id: "join_code_input",
+                  autocomplete: "off" %>
+              <button type="button"
+                      onclick="var c=document.getElementById('join_code_input').value.trim();if(c.length>0){window.location='/cup/join/'+c.toUpperCase()}"
+                      class="bg-[#ffdf00] hover:bg-yellow-400 text-black font-black text-xs px-3 py-2 rounded-lg transition-colors cursor-pointer">
+                Entrar
+              </button>
+            </div>
+            <p class="text-[10px] text-gray-600 mt-2">Peça o código para o criador do bolão</p>
+          <% end %>
+        </div>
+      </div>
+
+      <%# Regras %>
+      <div class="bg-[#1a2535] border border-[#243040] rounded-xl p-4">
+        <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-3">Como Pontuar</p>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🎯</span>
+            <div>
+              <p class="text-xs font-bold text-[#ffdf00]">Placar Exato</p>
+              <p class="text-[10px] text-gray-500">Ex: palpitou 2×1, saiu 2×1</p>
+            </div>
+            <span class="ml-auto text-sm font-black text-[#ffdf00]">+3 pts</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-lg">✅</span>
+            <div>
+              <p class="text-xs font-bold text-[#009c3b]">Resultado Certo</p>
+              <p class="text-[10px] text-gray-500">Ex: palpitou vitória, saiu vitória</p>
+            </div>
+            <span class="ml-auto text-sm font-black text-[#009c3b]">+1 pt</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-lg">❌</span>
+            <div>
+              <p class="text-xs font-bold text-gray-500">Errou</p>
+              <p class="text-[10px] text-gray-600">Resultado diferente</p>
+            </div>
+            <span class="ml-auto text-sm font-black text-gray-600">0 pts</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<% else %>
+
+  <%# ——— Visitante: CTA de login + bolões públicos ——— %>
+  <div class="flex flex-col lg:flex-row gap-6 items-start">
+
+    <%# Coluna principal: bolões públicos %>
+    <div class="w-full flex-1 min-w-0">
+
+      <%# Banner login %>
+      <div class="bg-[#1a2535] border border-[#243040] rounded-xl p-6 mb-5 text-center">
+        <p class="text-white font-bold text-sm mb-1">Faça login para participar do Bolão!</p>
+        <p class="text-gray-500 text-xs mb-4">Crie ou entre em um bolão e dispute com seus amigos</p>
+        <div class="flex justify-center gap-2">
+          <%= link_to "Entrar", new_user_session_path,
+              class: "border border-[#243040] text-gray-300 font-black px-6 py-2.5 text-xs uppercase tracking-wide hover:text-white hover:border-[#3d4f60] transition-colors rounded-lg" %>
+          <%= link_to "Criar Conta", new_user_registration_path,
+              class: "bg-[#009c3b] text-white font-black px-6 py-2.5 text-xs uppercase tracking-wide hover:bg-[#007a2e] transition-colors rounded-lg" %>
+        </div>
+      </div>
+
+      <%# Bolões públicos %>
+      <h2 class="text-sm font-black text-white uppercase tracking-wider mb-3">Bolões Públicos</h2>
+
+      <% if @public_pools.empty? %>
+        <div class="bg-[#1a2535] border border-[#243040] rounded-xl p-10 text-center">
+          <p class="text-4xl mb-3">🏆</p>
+          <p class="text-white font-bold">Nenhum bolão público ainda</p>
+          <p class="text-gray-500 text-xs mt-1">Seja o primeiro a criar um!</p>
+        </div>
+      <% else %>
+        <div class="grid gap-3">
+          <% @public_pools.each do |pool| %>
+            <div class="bg-[#1a2535] border border-[#243040] rounded-xl p-4">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                  <p class="font-black text-white truncate"><%= pool.name %></p>
+                  <% if pool.description.present? %>
+                    <p class="text-xs text-gray-500 mt-0.5 line-clamp-1"><%= pool.description %></p>
+                  <% end %>
+                  <span class="text-[10px] text-gray-500 mt-2 inline-block">
+                    👥 <%= pool.cup_pool_memberships.size %> participante<%= pool.cup_pool_memberships.size == 1 ? "" : "s" %>
+                  </span>
+                </div>
+                <%= link_to "Entrar →", new_user_session_path,
+                    class: "shrink-0 self-center text-xs font-black text-[#ffdf00] bg-[#1a1000] border border-[#ffdf00]/20 px-3 py-1.5 rounded-lg hover:border-[#ffdf00]/50 transition-colors" %>
               </div>
             </div>
           <% end %>
-        <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <%# Coluna lateral: regras ——— %>
+    <div class="w-full lg:w-72 shrink-0 space-y-4">
+
+      <%# Entrar com código %>
+      <div class="bg-[#1a2535] border border-[#243040] rounded-xl overflow-hidden">
+        <div class="px-4 py-3 bg-[#152030] border-b border-[#243040]">
+          <p class="text-xs font-black text-white uppercase tracking-wider">🔑 Tem um Código?</p>
+        </div>
+        <div class="p-4">
+          <p class="text-xs text-gray-500 mb-3">Faça login e use o código do bolão para entrar.</p>
+          <%= link_to new_user_session_path,
+              class: "block w-full text-center bg-[#ffdf00] hover:bg-yellow-400 text-black font-black text-sm py-2.5 rounded-lg transition-colors" do %>
+            Fazer Login →
+          <% end %>
+        </div>
       </div>
-    <% end %>
+
+      <%# Regras %>
+      <div class="bg-[#1a2535] border border-[#243040] rounded-xl p-4">
+        <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-3">Como Pontuar</p>
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="text-lg">🎯</span>
+            <div>
+              <p class="text-xs font-bold text-[#ffdf00]">Placar Exato</p>
+              <p class="text-[10px] text-gray-500">Ex: palpitou 2×1, saiu 2×1</p>
+            </div>
+            <span class="ml-auto text-sm font-black text-[#ffdf00]">+3 pts</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-lg">✅</span>
+            <div>
+              <p class="text-xs font-bold text-[#009c3b]">Resultado Certo</p>
+              <p class="text-[10px] text-gray-500">Ex: palpitou vitória, saiu vitória</p>
+            </div>
+            <span class="ml-auto text-sm font-black text-[#009c3b]">+1 pt</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-lg">❌</span>
+            <div>
+              <p class="text-xs font-bold text-gray-500">Errou</p>
+              <p class="text-[10px] text-gray-600">Resultado diferente</p>
+            </div>
+            <span class="ml-auto text-sm font-black text-gray-600">0 pts</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <%# Coluna lateral: ações ——— %>
-  <div class="w-full lg:w-72 shrink-0 space-y-4">
-
-    <%# Criar bolão %>
-    <div class="bg-[#1a2535] border border-[#243040] rounded-xl overflow-hidden">
-      <div class="px-4 py-3 bg-[#152030] border-b border-[#243040]">
-        <p class="text-xs font-black text-white uppercase tracking-wider">🏆 Criar Bolão</p>
-      </div>
-      <div class="p-4">
-        <%= link_to new_cup_pool_path, class: "block w-full text-center bg-[#009c3b] hover:bg-[#007a2e] text-white font-black text-sm py-2.5 rounded-lg transition-colors" do %>
-          + Novo Bolão
-        <% end %>
-      </div>
-    </div>
-
-    <%# Entrar com código %>
-    <div class="bg-[#1a2535] border border-[#243040] rounded-xl overflow-hidden">
-      <div class="px-4 py-3 bg-[#152030] border-b border-[#243040]">
-        <p class="text-xs font-black text-white uppercase tracking-wider">🔑 Entrar com Código</p>
-      </div>
-      <div class="p-4">
-        <%= form_with url: "#", method: :get, data: { controller: "cup-join" } do |f| %>
-          <div class="flex gap-2">
-            <%= f.text_field :code,
-                placeholder: "Ex: AB1C2D",
-                minlength: 6,
-                maxlength: 6,
-                required: true,
-                class: "flex-1 bg-[#0f1923] border border-[#243040] text-white text-sm font-mono px-3 py-2 rounded-lg focus:outline-none focus:border-[#009c3b] placeholder-gray-600 uppercase",
-                id: "join_code_input",
-                autocomplete: "off" %>
-            <button type="button"
-                    onclick="var c=document.getElementById('join_code_input').value.trim();if(c.length>0){window.location='/cup/join/'+c.toUpperCase()}"
-                    class="bg-[#ffdf00] hover:bg-yellow-400 text-black font-black text-xs px-3 py-2 rounded-lg transition-colors cursor-pointer">
-              Entrar
-            </button>
-          </div>
-          <p class="text-[10px] text-gray-600 mt-2">Peça o código para o criador do bolão</p>
-        <% end %>
-      </div>
-    </div>
-
-    <%# Regras %>
-    <div class="bg-[#1a2535] border border-[#243040] rounded-xl p-4">
-      <p class="text-[10px] font-black text-gray-400 uppercase tracking-wider mb-3">Como Pontuar</p>
-      <div class="space-y-2">
-        <div class="flex items-center gap-2">
-          <span class="text-lg">🎯</span>
-          <div>
-            <p class="text-xs font-bold text-[#ffdf00]">Placar Exato</p>
-            <p class="text-[10px] text-gray-500">Ex: palpitou 2×1, saiu 2×1</p>
-          </div>
-          <span class="ml-auto text-sm font-black text-[#ffdf00]">+3 pts</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-lg">✅</span>
-          <div>
-            <p class="text-xs font-bold text-[#009c3b]">Resultado Certo</p>
-            <p class="text-[10px] text-gray-500">Ex: palpitou vitória, saiu vitória</p>
-          </div>
-          <span class="ml-auto text-sm font-black text-[#009c3b]">+1 pt</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-lg">❌</span>
-          <div>
-            <p class="text-xs font-bold text-gray-500">Errou</p>
-            <p class="text-[10px] text-gray-600">Resultado diferente</p>
-          </div>
-          <span class="ml-auto text-sm font-black text-gray-600">0 pts</span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
+<% end %>
