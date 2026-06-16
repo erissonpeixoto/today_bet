@@ -12,9 +12,9 @@ class CupGuess < ApplicationRecord
     return unless cup_match.finished?
 
     points = if exact_score?  then 3
-             elsif correct_result? then 1
-             else 0
-             end
+    elsif correct_result? then 1
+    else 0
+    end
 
     update_columns(points_earned: points, locked: true)
   end

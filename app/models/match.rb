@@ -8,6 +8,7 @@ class Match < ApplicationRecord
   validates :home_club, :away_club, :league, :match_date, presence: true
 
   scope :today, -> { where(match_date: Date.today.all_day) }
+  scope :yesterday_and_today, -> { where(match_date: Date.yesterday.beginning_of_day..Date.today.end_of_day).order(:match_date) }
   scope :upcoming, -> { where("match_date >= ?", Time.current).order(:match_date) }
   scope :recent, -> { order(match_date: :desc) }
 

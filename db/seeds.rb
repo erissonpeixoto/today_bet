@@ -184,7 +184,7 @@ cup_teams_data = [
   { name: "Áustria",         logo_url: "https://media.api-sports.io/football/teams/775.png"   },
   { name: "Escócia",         logo_url: "https://media.api-sports.io/football/teams/1108.png"  },
   { name: "Turquia",         logo_url: "https://media.api-sports.io/football/teams/777.png"   },
-  { name: "República Tcheca",logo_url: "https://media.api-sports.io/football/teams/770.png"   },
+  { name: "República Tcheca", logo_url: "https://media.api-sports.io/football/teams/770.png"   },
   { name: "Bósnia",          logo_url: "https://media.api-sports.io/football/teams/1113.png"  },
   { name: "Suécia",          logo_url: "https://media.api-sports.io/football/teams/5.png"     },
   { name: "Noruega",         logo_url: "https://media.api-sports.io/football/teams/1090.png"  },
